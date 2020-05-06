@@ -38,7 +38,7 @@ public:
 template <typename W>
 int MinHeap<W>::min_child(int pos) const{
     //check if node has both children
-    if(2*pos + 2 >= array.size()){
+    if((unsigned int)(2*pos + 2) >= array.size()){
         return 2*pos + 1;
     }
     //compare key value of both nodes
@@ -56,7 +56,7 @@ void MinHeap<W>::push_up(int pos){
     //repeat until conditions are met or until node is root
     while(std::floor((double)(pos - 1) / 2) >= 0){
         std::pair<W, int>& r_cur = array[pos];
-        std::pair<W, int>& r_parent = array[std::floor((pos - 1) / 2)];
+        std::pair<W, int>& r_parent = array[(unsigned int)std::floor((pos - 1) / 2)];
         //if current node's key is smaller than parent's, swap them, else terminate
         if(r_cur < r_parent){
             std::swap(r_cur, r_parent);
@@ -96,7 +96,7 @@ void MinHeap<W>::min_heapify(){
 /*public methods*/
 template <typename W>
 MinHeap<W>::MinHeap(const std::vector<std::pair<W, int>>& cpy): array(cpy), track(new int[cpy.size()]){
-    for(int i = 0; i < cpy.size(); ++i){
+    for(unsigned int i = 0; i < cpy.size(); ++i){
         track[i] = i;
     }
     min_heapify();
@@ -104,7 +104,7 @@ MinHeap<W>::MinHeap(const std::vector<std::pair<W, int>>& cpy): array(cpy), trac
 
 template <typename W>
 MinHeap<W>::MinHeap(std::vector<std::pair<W, int>>&& cpy): array(cpy), track(new int[cpy.size()]){
-    for(int i = 0; i < cpy.size(); ++i){
+    for(unsigned int i = 0; i < cpy.size(); ++i){
         track[i] = i;
     }
     min_heapify();

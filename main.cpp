@@ -1,6 +1,7 @@
 #include <iostream>
 #include "graph_structures/Matrix.h"
 #include "utilities/Parser.h"
+#include "algorithms/prim.h"
 #include <filesystem>
 #include <bitset>
 #include <algorithm>
@@ -30,7 +31,7 @@ int main() {
     }*/
 
     //test parser
-    Graph_Data data = Parser::parse("..\\dataset\\ulysses22.tsp");
+    /*Graph_Data data = Parser::parse("..\\dataset\\ulysses22.tsp");
     std::cout << data.dim << std::endl;
     std::cout << data.name << std::endl;
     std::cout << (data.ty == coord_type ::geo) << std::endl;
@@ -40,6 +41,22 @@ int main() {
             std::cout << w.at(i, j) << " ";
         }
         std::cout << std::endl;
+    }*/
+
+    //test Prim
+    /*Matrix<double> mat(5,5);
+    for(unsigned int i=0; i < mat.sizeX(); ++i) {
+        for (unsigned int j = 0; j < mat.sizeY(); ++j) {
+            mat.update(i, j, 1);
+        }
     }
+
+    Tree_t tree = Prim(mat);
+    for(const auto& it: tree){
+        for(unsigned int n: it){
+            std::cout << n << " ";
+        }
+        std::cout << std::endl;
+    }*/
     return 0;
 }

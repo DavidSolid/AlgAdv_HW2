@@ -9,12 +9,13 @@
 #include "../graph_structures/Matrix.h"
 #include "../data_structures/MinHeap.h"
 #include <climits>
+typedef std::vector<std::vector<unsigned int>> Tree_t;
 
 template <typename T>
-void Prim(const Matrix<T>&); //tipo di ritorno da definire
+Tree_t Prim(const Matrix<T>&);
 
 template <typename T>
-void Prim(const Matrix<T>& G){
+Tree_t Prim(const Matrix<T>& G){
     //s == 0
     unsigned int n_vec = G.sizeX();
 
@@ -28,7 +29,7 @@ void Prim(const Matrix<T>& G){
     for(unsigned int i = 1; i < n_vec; ++i){
 
         //line 2 : Key[u] = +INF
-        V[i] = std::make_pair(INT_MAX, i);
+        V[i] = std::make_pair((T)INT_MAX, i);
 
         //line 3 : pi[u] <- NULL
         pi[i] = -1;
@@ -39,16 +40,17 @@ void Prim(const Matrix<T>& G){
     pi[0] = -1;
 
     //line 5 : Q <- V
-    MinHeap Q(V);
+    MinHeap<T> Q(V);
 
     //line 6 : while Q is not empty do
     while(Q.size()!=0){
 
         //line 7 : u <- extractMin(Q)
-        std::pair<W, int> u = Q.extractMin();
+        std::pair<T, int> u = Q.extractMin();
 
-        //line 8 : for each v adjacent to u do
-        for(std::pair<int, W> v: G[u.second]){ //TODO: da modificare
+        //line 8 : for each v adjacent to u do (all)
+        for(unsigned int j = 0; j < G.sizeY(); ++j){
+            std::pair<int, T> v = std::make_pair(j, G.at(u.second, j));
 
             //line 9 : if v in Q and w(u,v) < Key[v] then
             if(Q.exists(v.first) && v.second < V[v.first].first){
@@ -63,15 +65,13 @@ void Prim(const Matrix<T>& G){
         }
     }
 
-    //transform the list of edge into an Adjacency List //TODO: da modificare
-    /*AdjacencyList<W> A(n_vec);
+    Tree_t tree(n_vec);
     for(unsigned int i = 0; i < n_vec; ++i){
-        if(pi[i] != -1 && pi[i] != i)
-            A.add(Edge(i, pi[i], V[i].first));
+        if(pi[i] != -1){
+            tree[pi[i]].emplace_back(i);
+        }
     }
-
-    //line 12 : return A
-    return A;*/
+    return tree;
 }
 
 #endif //ALGADV_HW2_PRIM_H
