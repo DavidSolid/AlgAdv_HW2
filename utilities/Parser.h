@@ -7,28 +7,14 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-
-//coordinate types enum
-enum class coord_type{
-    cartesian,
-    geo,
-    none
-};
-
-//parsed data type
-typedef struct Obj{
-    std::string name;
-    coord_type ty;
-    unsigned int dim;
-    std::vector<std::pair<double, double>> cities;
-} Parsed_Map;
+#include "Graph_Data.h"
 
 class Parser{
 public:
-    static Parsed_Map parse(const std::filesystem::path&);
+    static Graph_Data<double> parse(const std::filesystem::path&);
 };
 
-Parsed_Map Parser::parse(const std::filesystem::path& f_name) {
+Graph_Data<double> Parser::parse(const std::filesystem::path& f_name) {
     std::ifstream ifs (f_name, std::ifstream::in);
     std::vector<std::pair<double, double>> data_points;
 
