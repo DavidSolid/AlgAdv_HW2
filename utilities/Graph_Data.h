@@ -7,6 +7,7 @@
 #ifndef ALGADV_HW2_GRAPH_DATA_H
 #define ALGADV_HW2_GRAPH_DATA_H
 #define RADIUS 6372.795477598
+#define PI 3.141592
 
 #include <functional>
 
@@ -29,6 +30,9 @@ public:
 
     Graph_Data(std::string , coord_type, unsigned int, Coordinate_List );
     [[nodiscard]] Matrix<T> get_weights() const;
+
+private:
+    static T to_radians(const T&);
 };
 
 template <typename T>
@@ -44,8 +48,8 @@ Matrix<T> Graph_Data<T>::get_weights() const {
     }
     else{ //formula da verificare (non funzionava il link)
         distance_fun = [](std::pair<T, T> p, std::pair<T, T> q){
-            p = std::make_pair(trunc(p.first), trunc(p.second));
-            q = std::make_pair(trunc(q.first), trunc(q.second));
+            p = std::make_pair(to_radians(p.first), to_radians(p.second));
+            q = std::make_pair(to_radians(q.first), to_radians(q.second));
             return trunc(RADIUS * acos(sin(p.first) * sin(q.first) + cos(p.first) * cos(q.first) * cos(p.second-q.second)));
         };
     }
@@ -60,6 +64,13 @@ Matrix<T> Graph_Data<T>::get_weights() const {
         }
     }
     return w;
+}
+
+template<typename T>
+T Graph_Data<T>::to_radians(const T& x) {
+    T deg = trunc(x);
+    T min = x - deg;
+    return PI*(deg + 5 * min / 3)/180;
 }
 
 #endif //ALGADV_HW2_GRAPH_DATA_H

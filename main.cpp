@@ -44,15 +44,21 @@ int main() {
     }*/
 
     //test preorder_2approx
-    Graph_Data data = Parser::parse("..\\dataset\\ulysses22.tsp");
+    Graph_Data data = Parser::parse("..\\dataset\\eil51.tsp");
     std::cout << data.dim << std::endl;
     std::cout << data.name << std::endl;
-    for(auto i: data.cities){
+    /*for(auto i: data.cities){
         std::cout << i.first << "-" << i.second << std::endl;
-    }
+    }*/
     std::cout << "is geo?: " << (data.ty == coord_type ::geo) << std::endl;
     std::cout << "is cartesian?: " << (data.ty == coord_type ::cartesian) << std::endl;
     Matrix mat(data.get_weights());
+    /*for(unsigned int i=0; i < data.dim; ++i){
+        for(unsigned int j=0; j < data.dim; ++j){
+            std::cout << mat.at(i, j) << " ";
+        }
+        std::cout << std::endl;
+    }*/
 
     auto cycle = preorder_2approx(mat);
     double res = 0;

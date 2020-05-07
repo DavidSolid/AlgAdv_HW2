@@ -60,8 +60,8 @@ Graph_Data<double> Parser::parse(const std::filesystem::path& f_name) {
             double value1;
             double value2;
 
-            if(isspace(lineStream.peek())){
-                lineStream.ignore(256, ' ');
+            while(isspace(lineStream.peek())){
+                lineStream.ignore(1, ' ');
             }
             lineStream.ignore(256, ' ');
 
