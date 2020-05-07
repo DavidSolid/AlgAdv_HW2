@@ -19,6 +19,12 @@ std::vector<unsigned int> preorder(unsigned int f_elem, const Tree_t& tree){
     return out;
 }
 
-//preorder_2approx code
+template <typename T>
+std::vector<unsigned int> preorder_2approx(Matrix<T> w){
+    Tree_t mst = Prim(w);
+    std::vector<unsigned int> chain = preorder(0, mst);
+    chain.emplace_back(0);
+    return chain;
+}
 
 #endif //ALGADV_HW2_PREORDER_2APPROX_H

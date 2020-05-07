@@ -1,7 +1,7 @@
 #include <iostream>
 #include "graph_structures/Matrix.h"
 #include "utilities/Parser.h"
-#include "algorithms/prim.h"
+#include "algorithms/preorder_2approx.h"
 #include <filesystem>
 #include <bitset>
 #include <algorithm>
@@ -34,7 +34,7 @@ int main() {
     /*Graph_Data data = Parser::parse("..\\dataset\\ulysses22.tsp");
     std::cout << data.dim << std::endl;
     std::cout << data.name << std::endl;
-    std::cout << (data.ty == coord_type ::geo) << std::endl;
+    std::cout << "is geo?: " << (data.ty == coord_type ::geo) << std::endl;
     Matrix w(data.get_weights());
     for(unsigned int i=0; i < data.dim; ++i){
         for(unsigned int j=0; j < data.dim; ++j){
@@ -43,20 +43,22 @@ int main() {
         std::cout << std::endl;
     }*/
 
-    //test Prim
-    /*Matrix<double> mat(5,5);
-    for(unsigned int i=0; i < mat.sizeX(); ++i) {
-        for (unsigned int j = 0; j < mat.sizeY(); ++j) {
-            mat.update(i, j, 1);
-        }
+    //test preorder_2approx
+    Graph_Data data = Parser::parse("..\\dataset\\ulysses22.tsp");
+    std::cout << data.dim << std::endl;
+    std::cout << data.name << std::endl;
+    for(auto i: data.cities){
+        std::cout << i.first << "-" << i.second << std::endl;
     }
+    std::cout << "is geo?: " << (data.ty == coord_type ::geo) << std::endl;
+    std::cout << "is cartesian?: " << (data.ty == coord_type ::cartesian) << std::endl;
+    Matrix mat(data.get_weights());
 
-    Tree_t tree = Prim(mat);
-    for(const auto& it: tree){
-        for(unsigned int n: it){
-            std::cout << n << " ";
-        }
-        std::cout << std::endl;
-    }*/
+    auto cycle = preorder_2approx(mat);
+    double res = 0;
+    for(unsigned int i = 0; i < cycle.size() - 1; ++i){
+        res += mat.at(cycle[i], cycle[i+1]);
+    }
+    std::cout << res << std::endl;
     return 0;
 }
