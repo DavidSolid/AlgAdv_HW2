@@ -10,6 +10,7 @@
 #define PI 3.141592
 
 #include <functional>
+#include <cmath>
 
 //coordinate types enum
 enum class coord_type{

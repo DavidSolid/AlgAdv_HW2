@@ -5,7 +5,6 @@
 #include <filesystem>
 #include <bitset>
 #include <algorithm>
-#include <cmath>
 #define SIZEX 10
 #define SIZEY 200
 
@@ -44,7 +43,8 @@ int main() {
     }*/
 
     //test preorder_2approx
-    Graph_Data data = Parser::parse("..\\dataset\\eil51.tsp");
+    std::cout << "start" << std::endl;
+    Graph_Data data = Parser::parse("..\\dataset\\dsj1000.tsp");
     std::cout << data.dim << std::endl;
     std::cout << data.name << std::endl;
     /*for(auto i: data.cities){
