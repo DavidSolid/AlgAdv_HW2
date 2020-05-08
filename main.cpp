@@ -43,7 +43,6 @@ int main() {
     }*/
 
     //test preorder_2approx
-    std::cout << "start" << std::endl;
     Graph_Data data = Parser::parse("..\\dataset\\dsj1000.tsp");
     std::cout << data.dim << std::endl;
     std::cout << data.name << std::endl;

@@ -50,11 +50,10 @@ Graph_Data<double> Parser::parse(const std::filesystem::path& f_name) {
         } else type = coord_type ::geo;
 
         //get coordinates
-        std::getline(ifs, d_line);
-        while(d_line != "NODE_COORD_SECTION"){
+        std::getline(ifs, d_line, ' ');
+        while(d_line != "NODE_COORD_SECTION\n"){
             std::getline(ifs, d_line);
         }
-
         unsigned int i = 0;
         while (std::getline(ifs, d_line) && i < dim) {
             std::stringstream lineStream(d_line);
@@ -72,6 +71,7 @@ Graph_Data<double> Parser::parse(const std::filesystem::path& f_name) {
 
             ++i;
         }
+
         ifs.close();
         return {name, type, dim, data_points};
     }else{
