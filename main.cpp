@@ -2,6 +2,7 @@
 #include "graph_structures/Matrix.h"
 #include "utilities/Parser.h"
 #include "algorithms/preorder_2approx.h"
+#include "algorithms/cheapest_insertion.h"
 #include <filesystem>
 #include <bitset>
 #include <algorithm>
@@ -49,8 +50,8 @@ int main() {
     /*for(auto i: data.cities){
         std::cout << i.first << "-" << i.second << std::endl;
     }*/
-    std::cout << "is geo?: " << (data.ty == coord_type ::geo) << std::endl;
-    std::cout << "is cartesian?: " << (data.ty == coord_type ::cartesian) << std::endl;
+    std::cout << "is geo?: " << (data.ty == coord_type::geo) << std::endl;
+    std::cout << "is cartesian?: " << (data.ty == coord_type::cartesian) << std::endl;
     Matrix mat(data.get_weights());
     /*for(unsigned int i=0; i < data.dim; ++i){
         for(unsigned int j=0; j < data.dim; ++j){
@@ -59,11 +60,15 @@ int main() {
         std::cout << std::endl;
     }*/
 
-    auto cycle = preorder_2approx(mat);
-    double res = 0;
-    for(unsigned int i = 0; i < cycle.size() - 1; ++i){
-        res += mat.at(cycle[i], cycle[i+1]);
+    auto cycle_2approx = preorder_2approx(mat);
+    auto cycle_cheapest = cheapest_insertion(mat);
+    double res_2approx = 0;
+    double res_cheapest = 0;
+    for(unsigned int i = 0; i < cycle_2approx.size() - 1; ++i){
+        res_2approx += mat.at(cycle_2approx[i], cycle_2approx[i+1]);
+        res_cheapest += mat.at(cycle_cheapest[i], cycle_cheapest[i+1]);
     }
-    std::cout << res << std::endl;
+    std::cout << "2approx  : " << res_2approx << std::endl;
+    std::cout << "cheapest : " << res_cheapest << std::endl;
     return 0;
 }

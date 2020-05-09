@@ -47,11 +47,11 @@ Graph_Data<double> Parser::parse(const std::filesystem::path& f_name) {
         typeStr >> strtype;
         if(strtype == "EUC_2D"){
             type = coord_type::cartesian;
-        } else type = coord_type ::geo;
+        } else type = coord_type::geo;
 
         //get coordinates
-        std::getline(ifs, d_line, ' ');
-        while(d_line != "NODE_COORD_SECTION\n"){
+        std::getline(ifs, d_line);
+        while(d_line != "NODE_COORD_SECTION"){
             std::getline(ifs, d_line);
         }
         unsigned int i = 0;

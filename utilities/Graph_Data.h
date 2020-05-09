@@ -47,7 +47,7 @@ Matrix<T> Graph_Data<T>::get_weights() const {
             return round(sqrt(pow(p.first - q.first, 2) + pow(p.second - q.second, 2)));
         };
     }
-    else{ //formula da verificare (non funzionava il link)
+    else{
         distance_fun = [](std::pair<T, T> p, std::pair<T, T> q){
             p = std::make_pair(to_radians(p.first), to_radians(p.second));
             q = std::make_pair(to_radians(q.first), to_radians(q.second));

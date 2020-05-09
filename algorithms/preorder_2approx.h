@@ -6,7 +6,7 @@
 #define ALGADV_HW2_PREORDER_2APPROX_H
 
 #include <vector>
-#include "prim.h"
+#include "../utilities/Prim.h"
 
 std::vector<unsigned int> preorder(unsigned int f_elem, const Tree_t& tree){
     std::vector<unsigned int> out;
