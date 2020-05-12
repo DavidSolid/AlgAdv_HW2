@@ -6,6 +6,7 @@
 #define ALGADV_HW2_CHEAPEST_INSERTION_H
 
 #include <vector>
+#include <climits>
 
 template <typename T>
 std::vector<unsigned int> cheapest_insertion(Matrix<T> w){

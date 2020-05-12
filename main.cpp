@@ -1,6 +1,7 @@
 #include <iostream>
 #include "graph_structures/Matrix.h"
 #include "utilities/Parser.h"
+#include "algorithms/held_karp.h"
 #include "algorithms/preorder_2approx.h"
 #include "algorithms/cheapest_insertion.h"
 #include <filesystem>
@@ -56,8 +57,10 @@ int main() {
         Matrix mat(data.get_weights());
 
 
-        auto cycle_2approx = preorder_2approx(mat);
-        auto cycle_cheapest = cheapest_insertion(mat);
+        //auto cycle_2approx = preorder_2approx(mat);
+        //auto cycle_cheapest = cheapest_insertion(mat);
+        auto keld_harp = held_karp(mat);
+        /*
         double res_2approx = 0;
         double res_cheapest = 0;
         for(unsigned int i = 0; i < cycle_2approx.size() - 1; ++i){
@@ -66,6 +69,8 @@ int main() {
         }
         std::cout << "2approx  : " << res_2approx << std::endl;
         std::cout << "cheapest : " << res_cheapest << std::endl << std::endl;
+         */
+        std::cout << "schifo  : " << keld_harp << std::endl << std::endl;
     }
 
     return 0;
