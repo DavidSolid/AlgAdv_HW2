@@ -49,7 +49,7 @@ int main() {
     Parser myParser = Parser();
     //for (const auto &entry : std::filesystem::directory_iterator(path)) {
         //Graph_Data data = Parser::parse(entry.path());
-        Graph_Data data = Parser::parse("..\\dataset\\burma14.tsp");
+        Graph_Data data = Parser::parse("..\\dataset\\small10.tsp");
         std::cout << data.dim << std::endl;
         std::cout << data.name << std::endl;
 

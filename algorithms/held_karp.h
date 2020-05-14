@@ -20,27 +20,31 @@ template <typename T>
 T held_karp_visit(const unsigned int v, SubSet S, const Matrix<T> w, std::unordered_map<key_type, T, std::function<size_t(key_type)>>& D){
     if (S.only_vertex(v)){
         return w.at(v,0);
-    }
-    try {
+    }else if(D.contains(std::make_pair(v, S.collection))){
+        /*
+        T value = D.at(std::make_pair(v, S.collection));
+        D.erase(std::make_pair(v, S.collection));
+        return value;
+        */
         return D.at(std::make_pair(v, S.collection));
-    }
-    catch (...) {}
-    T mindist = (T)INT_MAX;
-    int minprec = -1;
-    S.remove(v);
-    //i = 1 because we know that 0 was already removed from S
-    for (unsigned int u = 1; u < w.sizeY(); ++u){
-        if(S.at(u)){
-            T dist = held_karp_visit(u,S,w,D);
-            if ((dist + w.at(u,v)) < mindist) {
-                mindist = dist + w.at(u,v);
-                minprec = u;
+    }else {
+        T mindist = (T) INT_MAX;
+        int minprec = -1;
+        S.remove(v);
+        //i = 1 because we know that 0 was already removed from S
+        for (int u = 1; u < w.sizeY(); ++u) {
+            if (S.at(u)) {
+                T dist = held_karp_visit(u, S, w, D);
+                if ((dist + w.at(u, v)) < mindist) {
+                    mindist = dist + w.at(u, v);
+                    minprec = u;
+                }
             }
         }
+        S.add(v);
+        D[std::make_pair(v, S.collection)] = mindist;
+        return mindist;
     }
-    //std::cout << mindist << std::endl;
-    D[std::make_pair(minprec, S.collection)] = mindist;
-    return mindist;
 }
 
 
