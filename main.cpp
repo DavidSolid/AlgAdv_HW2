@@ -10,7 +10,6 @@
 #define SIZEX 10
 #define SIZEY 200
 
-#include "boost/functional/hash.hpp"
 
 int main() {
     //test bitset

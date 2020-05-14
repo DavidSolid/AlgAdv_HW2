@@ -13,31 +13,34 @@
 #include <iostream>
 #include "../utilities/SubSet.h"
 #include "../graph_structures/Matrix.h"
+#include <utility>
+typedef std::pair<unsigned int, std::vector<bool>> key_type;
 
 template <typename T>
-T held_karp_visit(const unsigned int v, SubSet S, const Matrix<T> w){
+T held_karp_visit(const unsigned int v, SubSet S, const Matrix<T> w, std::unordered_map<key_type, T, std::function<size_t(key_type)>>& D){
     if (S.only_vertex(v)){
         return w.at(v,0);
     }
-    // tanto non capita
-    // else if (D[]){}
-    else {
-        T mindist = (T)INT_MAX;
-        int minprec = -1;
-        S.remove(v);
-        //i = 1 because we know that 0 was already removed from S
-        for (int u = 1; u < w.sizeY(); ++u){
-            if(S.at(u)){
-                T dist = held_karp_visit(u,S,w);
-                if ((dist + w.at(u,v)) < mindist) {
-                    mindist = dist + w.at(u,v);
-                    minprec = u;
-                }
+    try {
+        return D.at(std::make_pair(v, S.collection));
+    }
+    catch (...) {}
+    T mindist = (T)INT_MAX;
+    int minprec = -1;
+    S.remove(v);
+    //i = 1 because we know that 0 was already removed from S
+    for (unsigned int u = 1; u < w.sizeY(); ++u){
+        if(S.at(u)){
+            T dist = held_karp_visit(u,S,w,D);
+            if ((dist + w.at(u,v)) < mindist) {
+                mindist = dist + w.at(u,v);
+                minprec = u;
             }
         }
-        std::cout << mindist << std::endl;
-        return mindist;
     }
+    //std::cout << mindist << std::endl;
+    D[std::make_pair(minprec, S.collection)] = mindist;
+    return mindist;
 }
 
 
@@ -51,10 +54,12 @@ T held_karp(Matrix<T> w) {
     SubSet S(w.sizeX(), true);
 
     //std::vector<bool> S(w.sizeX(),true);
+    auto hash = [](key_type a){
+        return std::hash<unsigned int>()(a.first) ^ std::hash<std::vector<bool>>()(a.second);
+    };
+    std::unordered_map<key_type, T, std::function<size_t(key_type)>> D(1, hash);
 
-    std::unordered_map<std::pair<unsigned int, std::vector<bool>>, int> D(0);
-
-    return held_karp_visit(0,S,w);
+    return held_karp_visit(0,S,w,D);
 }
 
 #endif //ALGADV_HW2_HELD_KARP_H

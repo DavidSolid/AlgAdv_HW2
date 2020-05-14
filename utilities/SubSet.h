@@ -37,14 +37,14 @@ bool SubSet::at(unsigned int v) const {
 
 void SubSet::remove(unsigned int v) {
     if(collection[v]){
-        collection[v] == false;
+        collection[v] = false;
         --present;
     }
 }
 
 void SubSet::add(unsigned int v) {
     if(!collection[v]){
-        collection[v] == true;
+        collection[v] = true;
         ++present;
     }
 }
