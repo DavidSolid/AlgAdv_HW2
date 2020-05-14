@@ -10,6 +10,8 @@
 #define SIZEX 10
 #define SIZEY 200
 
+#include "boost/functional/hash.hpp"
+
 int main() {
     //test bitset
     /*unsigned int n_elems = 3;
@@ -44,11 +46,11 @@ int main() {
         std::cout << std::endl;
     }*/
 
-
     std::string path = "..\\dataset";
     Parser myParser = Parser();
-    for (const auto &entry : std::filesystem::directory_iterator(path)) {
-        Graph_Data data = Parser::parse(entry.path());
+    //for (const auto &entry : std::filesystem::directory_iterator(path)) {
+        //Graph_Data data = Parser::parse(entry.path());
+        Graph_Data data = Parser::parse("..\\dataset\\burma14.tsp");
         std::cout << data.dim << std::endl;
         std::cout << data.name << std::endl;
 
@@ -71,7 +73,7 @@ int main() {
         std::cout << "cheapest : " << res_cheapest << std::endl << std::endl;
          */
         std::cout << "schifo  : " << keld_harp << std::endl << std::endl;
-    }
+   //}
 
     return 0;
 }
