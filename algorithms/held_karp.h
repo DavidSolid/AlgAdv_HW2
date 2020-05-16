@@ -13,13 +13,14 @@
 #include <utility>
 #include <chrono>
 
-#define TIMEOUT 2700.00
+//#define TIMEOUT 2700.00
+#define TIMEOUT 27.00
 
 typedef std::pair<unsigned int, std::vector<bool>> key_type;
 typedef std::chrono::time_point<std::chrono::steady_clock> race_time;
 
 template <typename T>
-T held_karp_visit(const unsigned int v, SubSet S, const Matrix<T> w, std::unordered_map<key_type, T, std::function<size_t(key_type)>>& D,std::unordered_map<key_type, unsigned int, std::function<size_t(key_type)>>& Pi, race_time& current){
+T held_karp_visit(const unsigned int v, SubSet S, const Matrix<T> w, std::unordered_map<key_type, T, std::function<size_t(key_type)>>& D,std::unordered_map<key_type, unsigned int, std::function<size_t(key_type)>>& Pi, race_time& starting_time, bool expired){
     if (S.only_vertex(v)){
         return w.at(v,0);
     }else if(D.contains(std::make_pair(v, S.collection))){
@@ -29,19 +30,16 @@ T held_karp_visit(const unsigned int v, SubSet S, const Matrix<T> w, std::unorde
         int minprec = -1;
         S.remove(v);
         //u = 1 because we know that 0 was already removed from S as 0 is the starting node
-        for (int u = 1; u < w.sizeY(); ++u) {
+        for (int u = 1; expired && ( u < w.sizeY() ); ++u) {
             if (S.at(u)) {
-                T dist = held_karp_visit(u, S, w, D, Pi, current);
+                T dist = held_karp_visit(u, S, w, D, Pi, starting_time, expired);
                 if ((dist + w.at(u, v)) < mindist) {
                     mindist = dist + w.at(u, v);
                     minprec = u;
                 }
-                if((std::chrono::steady_clock::now() - current).count() >= TIMEOUT) {
-                    S.add(v);
-                    D.insert_or_assign(std::make_pair(v, S.collection), mindist);
-                    Pi.insert_or_assign(std::make_pair(v, S.collection), minprec);
-                    return mindist;
-                }
+                std::chrono::duration<double> now = std::chrono::steady_clock::now() - starting_time;
+                if(now.count() >= TIMEOUT)
+                    expired = false;
             }
         }
         S.add(v);
@@ -64,9 +62,9 @@ std::vector<unsigned int> held_karp(Matrix<T> w) {
 
     std::unordered_map<key_type, unsigned int, std::function<size_t(key_type)>> Pi(1, hash);
 
-    race_time start = std::chrono::steady_clock::now();
+    race_time starting_time = std::chrono::steady_clock::now();
 
-    T value = held_karp_visit(0, S, w, D, Pi, start);
+    T value = held_karp_visit(0, S, w, D, Pi, starting_time, true);
 
     std::vector<unsigned int> C(1,0);
 
