@@ -7,63 +7,78 @@
 
 #include <vector>
 #include <unordered_map>
-#include <bitset>
-#include <numeric>
 #include <climits>
-#include <iostream>
 #include "../utilities/SubSet.h"
 #include "../graph_structures/Matrix.h"
 #include <utility>
+#include <chrono>
+
+#define TIMEOUT 2700.00
+
 typedef std::pair<unsigned int, std::vector<bool>> key_type;
+typedef std::chrono::time_point<std::chrono::steady_clock> race_time;
 
 template <typename T>
-T held_karp_visit(const unsigned int v, SubSet S, const Matrix<T> w, std::unordered_map<key_type, T, std::function<size_t(key_type)>>& D){
+T held_karp_visit(const unsigned int v, SubSet S, const Matrix<T> w, std::unordered_map<key_type, T, std::function<size_t(key_type)>>& D,std::unordered_map<key_type, unsigned int, std::function<size_t(key_type)>>& Pi, race_time& current){
     if (S.only_vertex(v)){
         return w.at(v,0);
     }else if(D.contains(std::make_pair(v, S.collection))){
-        /*
-        T value = D.at(std::make_pair(v, S.collection));
-        D.erase(std::make_pair(v, S.collection));
-        return value;
-        */
         return D.at(std::make_pair(v, S.collection));
     }else {
         T mindist = (T) INT_MAX;
         int minprec = -1;
         S.remove(v);
-        //i = 1 because we know that 0 was already removed from S
+        //u = 1 because we know that 0 was already removed from S as 0 is the starting node
         for (int u = 1; u < w.sizeY(); ++u) {
             if (S.at(u)) {
-                T dist = held_karp_visit(u, S, w, D);
+                T dist = held_karp_visit(u, S, w, D, Pi, current);
                 if ((dist + w.at(u, v)) < mindist) {
                     mindist = dist + w.at(u, v);
                     minprec = u;
                 }
+                if((std::chrono::steady_clock::now() - current).count() >= TIMEOUT) {
+                    S.add(v);
+                    D.insert_or_assign(std::make_pair(v, S.collection), mindist);
+                    Pi.insert_or_assign(std::make_pair(v, S.collection), minprec);
+                    return mindist;
+                }
             }
         }
         S.add(v);
-        D[std::make_pair(v, S.collection)] = mindist;
+        D.insert_or_assign(std::make_pair(v, S.collection), mindist);
+        Pi.insert_or_assign(std::make_pair(v, S.collection), minprec);
         return mindist;
     }
 }
 
 
 template <typename T>
-T held_karp(Matrix<T> w) {
-    //dichiaro D
-    //dichiaro pi
-    //Matrix<T> D(w.sizeX(),w.sizeY());
-    //Matrix<unsigned int> pi(w.sizeX(),w.sizeY());
-
+std::vector<unsigned int> held_karp(Matrix<T> w) {
     SubSet S(w.sizeX(), true);
 
-    //std::vector<bool> S(w.sizeX(),true);
     auto hash = [](key_type a){
         return std::hash<unsigned int>()(a.first) ^ std::hash<std::vector<bool>>()(a.second);
     };
+
     std::unordered_map<key_type, T, std::function<size_t(key_type)>> D(1, hash);
 
-    return held_karp_visit(0,S,w,D);
+    std::unordered_map<key_type, unsigned int, std::function<size_t(key_type)>> Pi(1, hash);
+
+    race_time start = std::chrono::steady_clock::now();
+
+    T value = held_karp_visit(0, S, w, D, Pi, start);
+
+    std::vector<unsigned int> C(1,0);
+
+    SubSet Y(w.sizeY(), true);
+
+    for(int i = 0; Pi.contains(std::make_pair(C[i], Y.collection)); ++i){
+        C.push_back(Pi.at(std::make_pair(C[i], Y.collection)));
+        Y.remove(C[i]);
+    }
+    C.push_back(0);
+
+    return C;
 }
 
 #endif //ALGADV_HW2_HELD_KARP_H
