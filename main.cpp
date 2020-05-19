@@ -17,20 +17,20 @@ int main() {
     for (const auto &entry : std::filesystem::directory_iterator(path)) {
         Graph_Data data = Parser::parse(entry.path());
         //Graph_Data data = Parser::parse("..\\dataset\\burma14.tsp");
+
         std::cout << data.dim << std::endl;
         std::cout << data.name << std::endl;
 
         std::cout << "is geo?: " << (data.ty == coord_type::geo) << std::endl;
         std::cout << "is cartesian?: " << (data.ty == coord_type::cartesian) << std::endl;
+
         Matrix mat(data.get_weights());
 
-        auto start = std::chrono::steady_clock::now();
-
         auto cycle_2approx = preorder_2approx(mat);
-        auto cycle_cheapest = cheapest_insertion(mat);
-        auto cycle_held_karp = held_karp(mat);
 
-        auto end = std::chrono::steady_clock::now();
+        auto cycle_cheapest = cheapest_insertion(mat);
+
+        auto cycle_held_karp = held_karp(mat);
 
         double res_held_karp = 0;
         double res_2approx = 0;
@@ -40,15 +40,10 @@ int main() {
             res_2approx += mat.at(cycle_2approx[i], cycle_2approx[i+1]);
             res_cheapest += mat.at(cycle_cheapest[i], cycle_cheapest[i+1]);
         }
+
         std::cout << "held_karp : " << res_held_karp << std::endl;
         std::cout << "2approx   : " << res_2approx << std::endl;
         std::cout << "cheapest  : " << res_cheapest << std::endl;
-
-
-
-        std::chrono::duration<double> elapsed = end - start;
-
-        std::cout << "tempo : "<< elapsed.count() << std::endl << std::endl;
     }
 
     return 0;

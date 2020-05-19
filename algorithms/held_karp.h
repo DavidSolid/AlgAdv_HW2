@@ -15,7 +15,10 @@
 
 //#define TIMEOUT 2700.00
 //#define TIMEOUT 300.00
-#define TIMEOUT 27.00
+//#define TIMEOUT 180.00
+//#define TIMEOUT 60.00
+//#define TIMEOUT 30.00
+#define TIMEOUT 0.00
 
 typedef std::pair<unsigned int, std::vector<bool>> key_type;
 typedef std::chrono::time_point<std::chrono::steady_clock> race_time;
