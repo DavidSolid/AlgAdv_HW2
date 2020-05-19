@@ -6,7 +6,7 @@
 
 #ifndef ALGADV_HW2_GRAPH_DATA_H
 #define ALGADV_HW2_GRAPH_DATA_H
-#define RADIUS 6372.795477598
+#define RADIUS 6378.388
 #define PI 3.141592
 
 #include <functional>
@@ -51,7 +51,11 @@ Matrix<T> Graph_Data<T>::get_weights() const {
         distance_fun = [](std::pair<T, T> p, std::pair<T, T> q){
             p = std::make_pair(to_radians(p.first), to_radians(p.second));
             q = std::make_pair(to_radians(q.first), to_radians(q.second));
-            return trunc(RADIUS * acos(sin(p.first) * sin(q.first) + cos(p.first) * cos(q.first) * cos(p.second-q.second)));
+            double q1 = cos(p.second - q.second);
+            double q2 = cos(p.first - q.first);
+            double q3 = cos(p.first + q.first);
+            return trunc(RADIUS * acos(0.5*((1.0+q1)*q2-(1.0-q1)*q3))+1.0);
+            //return trunc(RADIUS * acos(sin(p.first) * sin(q.first) + cos(p.first) * cos(q.first) * cos(p.second-q.second)));
         };
     }
 
