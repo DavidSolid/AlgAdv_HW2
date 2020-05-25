@@ -47,8 +47,84 @@
 \end{abstract}
 
 \section{Introduzione}
-
+Lo scopo di questo  progetto è l'analisi e l'implementazione di algoritmi per la risoluzione del problema del \textit{Traveling Salesman} (in seguito TSP) su grafi completi i cui archi hanno pesi che rispettano la disuguaglianza triangolare (anche detto \textit{Triangle-TSP}).
+Gli algoritmi implementati sono:
+\begin{enumerate}
+	\item Algoritmo (esatto) di Held e Karp
+	\item Algoritmo (approssimato) di 2-approssimazione basato su MST
+	\item Algoritmo (approssimato) basato su euristica costruttiva \textit{cheapest-insertion}
+\end{enumerate}
+\subsection{Pseudocodice}
+Come riferimento per l'implementazione di questi algoritmi è stato utilizzato il seguente pseudocodice spiegato durante le lezioni di laboratorio:\\
+\begin{algorithm}[H]
+	\SetAlgoLined
+	\DontPrintSemicolon
+	\KwIn{Graph G, vertex s}
+	\KwResult{Hamiltonial cycle}
+	//hello
+	\caption{Held e Karp}
+\end{algorithm}
+\begin{algorithm}[H]
+	\SetAlgoLined
+	\DontPrintSemicolon
+	\KwIn{Graph G, vertex s}
+	\KwResult{Hamiltonial cycle}
+	//hello
+	\caption{2-approssimazione}
+\end{algorithm}
+\begin{algorithm}[H]
+	\SetAlgoLined
+	\DontPrintSemicolon
+	\KwIn{Graph G, vertex s}
+	\KwResult{Hamiltonial cycle}
+	//hello
+	\caption{Cheapest-insertion}
+\end{algorithm}
 \section{Implementazione}
+In questa sezione verranno esposte e adeguatamente motivate le scelte implementative adottate durante lo sviluppo. L'intero progetto è stato realizzato facendo il più possibile uso di codice generico (template di classe per le strutture dati di supporto e template di funzione per gli algoritmi).\\
+Infine verrà data una spiegazione dettagliata sulla struttura del codice realizzato ed eventuali note per la compilazione.
+\subsection{Parser}
+Il dataset fornito è costituito, come per il progetto precedente, da un file per ogni grafo.\\
+La struttura dei file è espressa dalla seguente formula BNF:
+\begin{verbatim}
+<file> :: = <name-dec>
+            <type-comment block>
+            <dimension>
+            <edge-t-dec>
+            <edge-f-dec>?
+            <display-dec>?
+            <coord-sec>
+            EOF
+<name-dec> :: = NAME: <word> \n
+<type-comment block> :: = <type-dec> <comment> | 
+                          <comment> <type-dec>
+<type-dec> :: = TYPE: TSP \n
+<comment> :: = COMMENT: <phrase> \n
+<dimension> :: = DIMENSION: <integer> \n
+<edge-t-dec> :: = EDGE_WEIGHT_TYPE: <edge-type> \n
+<edge-type> :: = GEO | EUC_2D
+<edge-f-dec> :: = EDGE_WEIGHT_FORMAT: FUNCTION \n
+<display-dec> :: = DISPLAY_DATA_TYPE: COORD_DISPLAY \n
+<coord-sec> :: = NODE_COORD_SECTION \n
+                 <coordinates>
+<coordinates> :: = <coordinate> \n
+                   <coordinates> |
+                   <coordinate> \n
+<coordinate> :: = <integer> <float> <float>
+\end{verbatim}
+\subsection{Strutture dati generiche}
+\subsubsection{Matrix}
+\subsubsection{MinHeap}
+
+\subsection{Strutture per la rappresentazione di grafi e sottoinsiemi di nodi}
+\subsubsection{Graph\_Data}
+\subsubsection{SubSet}
+
+\subsection{Algoritmi}
+\subsubsection{Prim}
+\subsubsection{Held e Karp}
+\subsubsection{2-approssimazione}
+\subsubsection{Euristica cheapest-insertion}
 
 \section{Analisi}
 
