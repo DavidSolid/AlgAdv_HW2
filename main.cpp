@@ -43,7 +43,7 @@ int main() {
 
         std::cout << "held_karp : " << res_held_karp << std::endl;
         std::cout << "2approx   : " << res_2approx << std::endl;
-        std::cout << "cheapest  : " << res_cheapest << std::endl;
+        std::cout << "cheapest  : " << res_cheapest << std::endl << std::endl;
     }
 
     return 0;
