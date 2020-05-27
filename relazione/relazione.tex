@@ -59,26 +59,119 @@ Come riferimento per l'implementazione di questi algoritmi è stato utilizzato i
 \begin{algorithm}[H]
 	\SetAlgoLined
 	\DontPrintSemicolon
-	\KwIn{Graph G, vertex s}
-	\KwResult{Hamiltonial cycle}
-	//hello
+	\KwIn{Graph G = (V,E), S $\subseteq$ V, vertex v $\in$ S}
+	\KwResult{Minimum Weight of complete path in S from 0 to v }
+	\SetKwFunction{VISIT}{HK-VISIT}
+	\SetKwProg{Fn}{function}{}{}
+  	\Fn{\VISIT{v,S}}{
+        \uIf{S = \{v\}}{
+			\textbf{return} w[v,0]\;
+		}
+		\uElseIf{d[v,S] $\neq$ NULL}{
+			\textbf{return} d[v,S]\;
+		}
+		\Else{
+			mindist = +$\infty$\;
+			minprec = NULL\;
+			\For{each u $\in$ S \textbackslash \{v\}}{
+				dist = HK-VISIT(u, S\textbackslash \{v\})\;
+				\If{dist + w[u,v] $<$ mindist}{
+					mindist = dist + w[u,v]\;
+					minprec = u\;
+				}
+			}
+			d[v,S] = mindist\;
+			$\pi$[v,S] = minprec\;	
+			\textbf{return} mindist\;	
+		}
+  	}
+  	\textbf{end function}\;
 	\caption{Held e Karp}
 \end{algorithm}
 \begin{algorithm}[H]
 	\SetAlgoLined
 	\DontPrintSemicolon
-	\KwIn{Graph G, vertex s}
 	\KwResult{Hamiltonial cycle}
-	//hello
-	\caption{2-approssimazione}
+	\SetKwFunction{VISIT}{HK-TSP}
+	\SetKwProg{Fn}{function}{}{}
+  	\Fn{\VISIT{G}}{
+  		\textbf{let} G = (V,E)\;
+  		d = Ø\;
+		$\pi$ = Ø\;	
+		\textbf{return} HK-VISIT(0,V)\;		
+  	}
+  	\textbf{end function}\;
+	\caption{Initialization and call to HK-VISIT}
 \end{algorithm}
 \begin{algorithm}[H]
 	\SetAlgoLined
 	\DontPrintSemicolon
-	\KwIn{Graph G, vertex s}
+	\KwIn{Vertex v}
+	\KwResult{Preorder list of MST}
+	\SetKwFunction{PRE}{PREORDER}
+	\SetKwProg{Fn}{function}{}{}
+  	\Fn{\PRE{v}}{
+  		P.add(v)\tcp*{Add v to the preorder list of MST P}
+        \uIf{internal(v)}{
+			\For{each u $\in$ children(v)}{
+				\textbf{PREORDER}(u)\;
+			}
+		}
+		\textbf{return} P
+  	}
+  	\textbf{end function}\;
+	\caption{Preorder for 2-approximation}
+\end{algorithm}
+\begin{algorithm}[H]
+	\SetAlgoLined
+	\DontPrintSemicolon
+	\KwIn{Graph G = (V,E), cost function c}
 	\KwResult{Hamiltonial cycle}
-	//hello
-	\caption{Cheapest-insertion}
+	\SetKwFunction{APP}{APPROX\_T\_TSP}
+	\SetKwProg{Fn}{function}{}{}
+  	\Fn{\APP{G,c}}{
+  		V = \{$v_i1$, $v_i2$, $\cdots$, $v_in$\}\;
+  		r $\gets$ v1 \tcp*{Starting radix for Prim}
+  		T* $\gets$ \textbf{PRIM}(G,c,r)\;
+  		$<v_i1$, $v_i2$, $\cdots$, $v_in>$ = $H^\prime$ $\gets$ \textbf{PREORDER}(r)\;
+		\textbf{return} $<H^\prime$, $v_in>$ = $H$\;
+  	}
+  	\textbf{end function}\;
+	\caption{2-approximation}
+\end{algorithm}
+\begin{algorithm}[H]
+	\SetAlgoLined
+	\DontPrintSemicolon
+	\KwIn{Graph G = (V,E)}
+	\KwResult{Hamiltonial cycle}
+	mindist = +$\infty$\; 
+	j = NULL \tcp*{Find j who minimize w(0,j)}
+	\For{each u $\in$ V  \textbackslash \{0\}}{
+			\If{w(0,u) $<$ mindist}{
+				mindist = w(0,u)\;
+				j = u\;
+			}
+	}
+	C = \{0, j, 0\}\tcp*{Repeat until the circuit has all the vertices}
+	\While{$|$C $|$ $<$ $|$V $|$ + 1}{
+		mindist = +$\infty$\;
+		find\_i = NULL\;
+		find\_j = NULL\;
+		find\_k = NULL\;
+		\For{each (i,j) adjacent in C}{
+			\For{each k $\in$ V  \textbackslash C}{
+				\If{w(i,k) + w(k,j) - w(i,j) $<$ mindist}{
+					mindist = w(i,k) + w(k,j) - w(i,j)\;
+					find\_i = i\;
+					find\_j = j\;
+					find\_k = k\;
+				}		
+			}
+		}
+	C.insertBetween(find\_i, find\_j, find\_k)\tcp*{Insert k in C between i and j}
+	}
+	\textbf{return} C\;
+	\caption{Cheapest-Insertion}
 \end{algorithm}
 \section{Implementazione}
 In questa sezione verranno esposte e adeguatamente motivate le scelte implementative adottate durante lo sviluppo. L'intero progetto è stato realizzato facendo il più possibile uso di codice generico (template di classe per le strutture dati di supporto e template di funzione per gli algoritmi).\\
