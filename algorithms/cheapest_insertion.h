@@ -15,22 +15,22 @@ std::vector<unsigned int> cheapest_insertion(Matrix<T> w){
 
     //find j who minimize w(0,j)
     T find_min = (T)INT_MAX;
-    unsigned int find_value = -1;
+    unsigned int find_node = -1;
     for(unsigned int j = 1; j<w.sizeY(); ++j){
         if(w.at(0,j) < find_min) {
             find_min = w.at(0, j);
-            find_value = j;
+            find_node = j;
         }
     }
     //add j to C -> C(0,j,0)
-    C.insert(C.begin() + 1, find_value);
+    C.insert(C.begin() + 1, find_node);
     bool L[w.sizeY()] = {0};
-    L[0], L[find_value] = true, true;
+    L[0], L[find_node] = true, true;
 
     //select k
     while(C.size() <= w.sizeY()){
         find_min = (T)INT_MAX;
-        find_value = -1;
+        find_node = -1;
         unsigned int temp_pos = INT_MAX;
         //we always know that 0 is already inside C
         for(unsigned int k = 1; k<w.sizeY(); ++k){
@@ -40,14 +40,14 @@ std::vector<unsigned int> cheapest_insertion(Matrix<T> w){
                 for(unsigned int i = 0; i<C.size()-1; ++i) {
                     if((w.at(C[i],k) + w.at(C[i+1],k) - w.at(C[i],C[i+1])) < find_min){
                         find_min = w.at(i,k) + w.at(C[i],k) - w.at(i,C[i]);
-                        find_value = k;
+                        find_node = k;
                         temp_pos = i+1;
                     }
                 }
             }
         }
-        C.insert(C.begin() + temp_pos, find_value);
-        L[find_value] = true;
+        C.insert(C.begin() + temp_pos, find_node);
+        L[find_node] = true;
     }
     return C;
 }
