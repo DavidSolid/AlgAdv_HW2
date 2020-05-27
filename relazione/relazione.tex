@@ -112,12 +112,30 @@ La struttura dei file è espressa dalla seguente formula BNF:
                    <coordinate> \n
 <coordinate> :: = <integer> <float> <float>
 \end{verbatim}
+La classe \textit{Parser} si occupa della decodifica di questi file e organizza le informazioni rilevanti quali tipologia delle coordinate, dimensione e coordinate dei nodi creando un oggetto di classe \textit{Graph\_data}.
 \subsection{Strutture dati generiche}
 \subsubsection{Matrix}
+La classe \textit{Matrix$<$T$>$} rappresenta una generica matrice rettangolare di oggetti di tipo T.\\
+Essa è utilizzata per la memorizzazione della matrice di adiacenza associata a un grafo.
 \subsubsection{MinHeap}
-
+La struttura dati \textit{MinHeap} è la stessa utilizzata nel progetto precedente ed è utilizzata per l'esecuzione dell'algoritmo di Prim all'interno dell'algoritmo di 2-approssimazione.
 \subsection{Strutture per la rappresentazione di grafi e sottoinsiemi di nodi}
 \subsubsection{Graph\_Data}
+Per rappresentare i dati estratti da un file relativo ad un certo grafo, abbiamo usato il template di classe \textit{Graph\_data$<$T$>$}. Gli oggetti di questo tipo contengono i seguenti campi dati:
+\begin{itemize}
+	\item Nome del grafo
+	\item Tipo di coordinate (\verb|cartesian| o \verb|geo|)
+	\item Dimensione del grafo (numero di nodi)
+	\item Lista di coordinate (rappresentata come un vettore di coppie di elementi di tipo T)
+\end{itemize}
+Questa classe espone un unico metodo \verb|get_weights| che restituisce la matrice di adiacenza associata al grafo rappresentato dall'oggetto su cui viene invocato. La costruzione di tale matrice dipende dalla tipologia di coordinate.\\
+Generalmente la matrice di adiacenza è espressa dalla seguente formula:
+$$w[i,j]=dist\_fun(i, j)$$
+Dove \verb|dist_fun(i,j)| è la distanza tra il nodo $i$ e $j$ del grafo.\\
+In caso le coordinate di un nodo siano di tipo cartesiano, \verb|dist_fun| è la distanza euclidea:
+$$dist\_fun(i,j)=round(\sqrt{((i.x - j.x)^2 + (i.y - j.y)^2)})$$
+In caso le coordinate di un nodo siano coordinate geografiche, \verb|dist_fun| è la seguente funzione:
+$$**formula**$$
 \subsubsection{SubSet}
 
 \subsection{Algoritmi}
