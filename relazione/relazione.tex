@@ -228,7 +228,10 @@ Dove \verb|dist_fun(i,j)| è la distanza tra il nodo $i$ e $j$ del grafo.\\
 In caso le coordinate di un nodo siano di tipo cartesiano, \verb|dist_fun| è la distanza euclidea:
 $$dist\_fun(i,j)=round(\sqrt{((i.x - j.x)^2 + (i.y - j.y)^2)})$$
 In caso le coordinate di un nodo siano coordinate geografiche, \verb|dist_fun| è la seguente funzione:
-$$**formula**$$
+$$dist\_fun(i,j) = trunc(Earth\_Rad * acos(0.5*((1+q1)*q2-(1-q1)*q3))+1)$$
+$$\text{where } q1 = cos((rad)i.y - (rad)j.y)$$
+$$q2 = cos((rad)i.x - (rad)j.x)$$
+$$q3 = cos((rad)i.x + (rad)j.x)$$
 \subsubsection{SubSet}
 
 \subsection{Algoritmi}
