@@ -8,9 +8,10 @@
 #include <vector>
 
 class SubSet {
+private:
+    unsigned int present;
 public:
     std::vector<bool> collection;
-    unsigned int present;
     SubSet(unsigned int);
     SubSet(unsigned int, bool);
     [[nodiscard]] bool only_vertex(unsigned int) const;

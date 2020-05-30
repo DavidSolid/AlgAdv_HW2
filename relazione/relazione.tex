@@ -233,7 +233,29 @@ $$\text{where } q1 = cos((rad)i.y - (rad)j.y)$$
 $$q2 = cos((rad)i.x - (rad)j.x)$$
 $$q3 = cos((rad)i.x + (rad)j.x)$$
 \subsubsection{SubSet}
+\begin{flushleft}
+Per tenere traccia della presenza o meno di un nodo del grafo all'interno del ciclo corrente nell'istanza dell'algoritmo \textbf{Held e Karp}, durante la ricorsione, abbiamo implementato la classe \textit{SubSet}.\\
+Gli oggetti di questo tipo contengono due campi dati:
+\begin{itemize}
+	\item Un \verb|std::vector|$<$bool$>$ nella quale gli indici con valore \verb|TRUE| rappresentano nodi presenti nel ciclo
+	\item Un contatore che traccia il numero di nodi presenti nel ciclo
+\end{itemize}
 
+La classe espone i metodi \verb|at| e \verb|add| che rispettivamente permettono il controllo di presenza di un nodo nel ciclo e l'aggiunta di un nuovo nodo al ciclo.\\
+Il metodo \verb|remove| è utilizzato per implementare l'operazione \verb|S\{v}| rimuovendo un nodo dal ciclo e aggiornando il contatore.\\
+Infine il metodo \verb|only_vertex| è utilizzato nella guardia del primo \verb|IF| dell'algoritmo di \textbf{Held e Karp}:
+	\lstset{language=c++, style=mystyle,backgroundcolor=\color{white}, firstnumber=1}  	 	
+\begin{lstlisting}[mathescape=true]
+function HK-VISIT(v,S)
+	if S = v} then
+		return w[v,0]
+\end{lstlisting}
+il metodo controlla se il contatore è uguale a 1 e se il nodo è presente nel ciclo.
+\end{flushleft}
+\subsubsection{Unordered Map}
+La \verb|std::unordered_map| è l'implementazione di una \textbf{Hash Map} in \textit{C++}. Questo contenitore è stato utilizzato nell'algoritmo di \textbf{Held e Karp} per l'implementazione di \verb|d[v,S]| e $\pi$\verb|[v,S]|.\\
+%TODO
+Dato che la funzione di \textbf{hashing} prende in input il nodo \verb|v| e il ciclo corrente \verb|S| rappresentato dal\verb|std::vector|$<$bool$>$ della classe \textbf{SubSet}, è risultato necessario rendere pubblico il corrispondente campo dati per ottimizzare i tempi di esecuzione.
 \subsection{Algoritmi}
 \subsubsection{Prim}
 \subsubsection{Held e Karp}
