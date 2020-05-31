@@ -260,8 +260,78 @@ Dato che la funzione di \textbf{hashing} prende in input il nodo \verb|v| e il c
 \subsubsection{Prim}
 \subsubsection{Held e Karp}
 \subsubsection{2-approssimazione}
+\newpage
 \subsubsection{Euristica cheapest-insertion}
+\begin{flushleft}
+Come euristica abbiamo scelto \textbf{Cheapest-Insertion}, e l'implemnetazione presente nel file \verb|algorithms\cheapest_insertion.h| è la seguente:
+\lstset{language=c++, style=mystyle}
+\lstinputlisting[language=c++]{cheap_insert.cpp}
 
+\textbf{Note implementative:}
+La funzione come le altre ritorna un \verb|std::vector<unsigned int>| che rappresenta il circuito hamiltoniano trovato.\\
+La procedura descritta a lezione è composta da 4 passi:
+\begin{enumerate}
+\item \textbf{Inizializzazione:} considera il circuito parziale composto dal solo vertice \verb|0|. Trova un vertice \verb|j| che minimizza \verb|w(0,j)| e costruisci il circuito parziale \verb|(0,j,0)|
+\item \textbf{Selezione:} trova un vertice \verb|k| non presente nel circuito parziale e un arco \verb|{i,j}| del circuito parziale che minimizzano il valore \verb|w(i,k)+w(k,j)-w(i,j)|
+\item \textbf{Inserimento:} inserisci \verb|k| tra \verb|i| e \verb|j|
+\item ripeti da (\textbf{2}) finché non hai inserito tutti i vertici nel circuito
+\end{enumerate}
+Il passo \textbf{1} è implementato nella prima parte dell'algoritmo:
+\lstset{language=c++, style=mystyle, firstnumber=2}
+\begin{lstlisting}
+    std::vector<unsigned int> C(2,0);
+    T find_min = (T)INT_MAX;
+    int find_node = -1;
+    for(int j = 1; j<w.sizeY(); ++j){
+        if(w.at(0,j) < find_min) {
+            find_min = w.at(0, j);
+            find_node = j;
+        }
+    }
+    C.insert(C.begin() + 1, find_node);
+    bool L[w.sizeY()] = {0};
+    L[0], L[find_node] = true, true;
+\end{lstlisting}
+Prima del passo \textbf{2} inizializziamo un vettore di \verb|bool| per tenere traccia dei nodi inseriti nel ciclo parziale ad ogni iterazione:
+\lstset{language=c++, style=mystyle, firstnumber=12}
+\begin{lstlisting}
+    bool L[w.sizeY()] = {0};
+    L[0], L[find_node] = true, true;
+\end{lstlisting}
+Il passo \textbf{4} di ripetizione è implementato dal ciclo while:
+\lstset{language=c++, style=mystyle, firstnumber=14}
+\begin{lstlisting}
+    while(C.size() <= w.sizeY()){
+   	    ...    
+    }
+\end{lstlisting}
+All'interno del ciclo while è implementato il passo \textbf{2}:
+\lstset{language=c++, style=mystyle, firstnumber=15}
+\begin{lstlisting}
+        find_min = (T)INT_MAX;
+        find_node = -1;
+        unsigned int temp_pos = INT_MAX;
+        for(int k = 1; k<w.sizeY(); ++k){
+            if(!L[k]){
+                for(unsigned int i = 0; i<C.size()-1; ++i) {
+                    if((w.at(C[i],k) + w.at(C[i+1],k) - w.at(C[i],C[i+1])) < find_min){
+                        find_min = w.at(C[i],k) + w.at(C[i+1],k) - w.at(C[i],C[i+1]);
+                        find_node = k;
+                        temp_pos = i+1;
+                    }
+                }
+            }
+        }
+\end{lstlisting}
+Cicliamo tutti i nodi del grafo che non fanno parte del circuito (saltando lo 0 dato che sappiamo faccia parte del circuito di partenza), e per ogni nodo cerchiamo quello che minimizza la formula \verb|w(i,k)+w(k,j)-w(i,j)|.\\
+Nel passo \textbf{3} inseriamo il nodo trovato e aggiorniamo il vettore tenente traccia dei nodi presenti nel ciclo parziale:
+\lstset{language=c++, style=mystyle, firstnumber=29}
+\begin{lstlisting}
+        C.insert(C.begin() + temp_pos, find_node);
+        L[find_node] = true;
+\end{lstlisting}
+
+\end{flushleft}
 \section{Analisi}
 %TODO la tabella esce dai margini
 \input{tabella_richiesta.tex}
