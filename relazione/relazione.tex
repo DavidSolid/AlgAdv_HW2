@@ -332,10 +332,76 @@ Nel passo \textbf{3} inseriamo il nodo trovato e aggiorniamo il vettore tenente 
 \end{lstlisting}
 
 \end{flushleft}
+\newpage
 \section{Analisi}
-%TODO la tabella esce dai margini
+\subsection{Risultati prodotti}
 \begin{flushleft}
+Di seguito è mostrata la tabella completa dei tempi di esecuzione (ignorando il tempo utilizzato per il parsing) e degli errori relativi degli algoritmi per ogni grafo e relativo peso del ciclo della soluzione trovata: 
+
 \input{tabella_richiesta.tex}
+%TODO la tabella esce dai margini
+
+\subsection{Analisi e conclusioni}
+Dall'analisi dei tempi d'esecuzione possiamo notare che generalmente gli algoritmi considerati più efficienti (quelli con complessità asintotica $O(m\cdot\log n)$) risultano essere effettivamente i più veloci.\\
+Si può infatti notare dalla Figura \ref{total} come il tempo totale di esecuzione dell'algoritmo di Prim e Kruskal Union-Find sull'intero test-set ammonti a pochi secondi ($\leq 5 s$) mentre le varie istanze di Naive Kruskal impieghino dai 20 ai 30 minuti.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{CONFRONTO_ERRORI_RELATIVI_20_MIN_NEW.png}
+	\caption{\textbf{Confronto degli errori relativi tra gli algoritmi}}
+	\label{total}
+\end{figure}
+
+\newpage
+\subsubsection{Confronto tra tutti gli algoritmi}
+Considerando invece i tempi di esecuzione medi in relazione al numero di nodi di un grafo, ci accorgiamo che, per grafi di piccola taglia, le varianti DFS e BFS di Naive Kruskal risultano essere più efficienti di Prim.\\
+Come si può notare dalla Figura \ref{conf_tot}, Kruskal DFS e Kruskal BFS hanno tempi medi d'esecuzione più bassi rispetto all'algoritmo di Prim per grafi con numero di nodi, rispettivamente, minori di 100 e 40.
+Questo fenomeno è probabilmente dovuto all'overhead causato dall'utilizzo di strutture dati come MinHeap e dalla costruzione della AdjacencyList finale che diventa tuttavia trascurabile per grafi di taglia sufficientemente alta ed è compensato dai benefici che esse forniscono in termini di efficienza.\\
+Notiamo inoltre che Kruskal con Union-Find è l'algoritmo più efficiente e riesce ad ottenere prestazioni migliori rispetto agli altri algoritmi su grafi di qualsiasi taglia.\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{CONFRONTO_ERRORI_RELATIVI_20_MIN_NEW.png}
+	\caption{\textbf{Confronto degli errori relativi tra gli algoritmi}}
+	\label{conf_tot}
+\end{figure}
+Notiamo infine un caso particolare per i grafi di taglia 100 nella quale tutti gli algoritmi sembrano avere un tempo di esecuzione simile, osservando i singoli grafi possiamo notare come il grafo 20 risulti l'unico in cui \textbf{KRUSKAL UNION-FIND} abbia un tempo di esecuzione peggiore di tutte le altre implementazioni.
+\newpage
+\subsubsection{Confronto tra le euristiche costruttive}
+Le due varianti di Naive Kruskal differiscono unicamente nell'approccio alla \textit{cycle detection} in fase di costruzione del MST.\\
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.9\textwidth,height=\textheight,keepaspectratio]{TEMPO_SU_NODI_2_CHEAP_NEW.png}
+	\caption{\textbf{Confronto 2-Approssimazione e Cheapest Insertion}}
+	\label{app-cheap}
+\end{figure}
+
+\newpage
+\subsubsection{Confronto tra i TIMEOUT di Held-Karp}
+Come affermato in precedenza, Kruskal Union-Find è l'algoritmo più veloce su ogni singola istanza presente nel test-set.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth, height=\textheight,keepaspectratio]{CONFRONTO_TIMEOUT_ERRORI.png}
+\caption{\textbf{Confronto errori relativi al variare del TIMEOUT}}
+\label{TIMEOUT-err}
+\end{figure}
+
+\newpage
+\subsubsection{Stima dei tempi di esecuzione di Held-Karp}
+Studiando la dimensione di \textit{d} e $\pi$ possiamo osservare come questa vari rispetto al numero di nodi seguendo la seguente formula: $dim = (2^{(n-2)} - 1) * (n-1) + 1$.
+%TODO scrivo ciclo/ funzione / ricorsione???????
+Supponendo di avere un computer capace di eseguire ogni chiamata ricorsiva in tempo medio $\sim 5.5*10^{-5}$ possiamo stimare il tempo di esecuzione dell'algoritmo per ogni istanza del dataset di grafi.
+\input{stima_dim.tex}
+I primi 3 tempi non sono stime ma sono stati ottenuti tramite l'esecuzione dell'algoritmo, possiamo osservare come già con 22 nodi il tempo di esecuzione si aggira intorno ai 40 minuti, ma il salto a 51 nodi porta il tempo stimato a circa 49090 anni
+%TODO una conclusione??? dimostrando così l'impraticabilità dell'algoritmo per grafi di dimensioni XXX?
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth, height=\textheight,keepaspectratio]{STIME_TEMPO.png}
+\caption{\textbf{Stima della crescita del tempo di esecuzione al variare dei nodi}}
+\label{STIME_temp}
+\end{figure}
 \end{flushleft}
+
+
+
+
 
 \end{document}

@@ -12,7 +12,7 @@
 
 
 int main() {
-
+    //IF YOU WANT TO CHECK ONLY ONE GRAPH YOU CAN USE THIS COMMENTED SCRIPT
     /*
     Parser myParser = Parser();
     Graph_Data data = Parser::parse("..\\dataset\\burma14.tsp");
@@ -47,6 +47,7 @@ int main() {
     std::cout << "cheapest  : " << res_cheapest << std::endl << std::endl;
     */
 
+    //IF YOU WANT TO CHECK ALL THE DATASET YOU CAN USE THIS SCRIPT
     std::string path = "..\\dataset";
     Parser myParser = Parser();
     for (const auto &entry : std::filesystem::directory_iterator(path)) {

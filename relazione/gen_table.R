@@ -21,6 +21,7 @@ held_0 = held_0[order(held_0$NODE),]
 
 err <-data.frame(time_result$NODE, time_result$WEIGHT_2, time_result$WEIGHT_CHEAP, held_20$WEIGHT, held_5$WEIGHT, held_3$WEIGHT, held_1$WEIGHT, held_30$WEIGHT, held_0$WEIGHT)
 
+
 options(scipen=999)
 
 # plot(x= held_5$NODE, y= held_5$WEIGHT, log= "xy", type = "l", col= "blue", ylab = "PESO CIRCUITO", xlab = "NUMERO DI NODI", main = "CONFRONTO PESI HELD-KARP 5min", lty = 1, lwd = 2)
@@ -78,3 +79,26 @@ held_20$TIME = c(2.44453,	14.64750, 900 + 302.14300, 900 + 300.66200, 900 + 300.
 tabella <-data.frame(time_result$GRAPH, held_20$WEIGHT, held_20$TIME, relative$HELD_20, time_result$WEIGHT_CHEAP, time_result$TIME_CHEAP, relative$WEIGHT_CHEAP, time_result$WEIGHT_2, time_result$TIME_2, relative$WEIGHT_2)
 colnames(tabella) = c("Istanza", "Soluzione", "Tempo (s)", "Errore", "Soluzione", "Tempo (s)", "Errore", "Soluzione", "Tempo (s)", "Errore")
 write.csv(tabella, "tabella.csv", row.names = TRUE, quote = FALSE)
+
+
+
+
+options(scipen=10)
+options(digits=2)
+#sono pigro
+stime <-data.frame(held_20$GRAPH, held_20$NODE)
+colnames(stime) = c("GRAPH", "NODE")
+stime$DIM = (2^(stime$NODE - 2) -1 ) * (stime$NODE - 1) + 1
+stime$TIME = stime$DIM * ((5.5)*(10^(-5)))
+write.csv(stime, "stime.csv", row.names = TRUE, quote = FALSE)
+
+par(mar=c(4.1, 2.1, 2.1, 10.1))
+plot(x= stime$NODE, y= stime$TIME,xaxt="n",log= "xy",yaxt="n",type = "l", col= "green", ylab = "", xlab = "NUMERO DI NODI", main = "CRESCITA DEL TEMPO STIMATO AL CRESCERE DEI NODI", lty = 1, lwd = 2)
+
+points(x= stime$NODE, y= stime$TIME, pch= 0, col="blue", cex=0.85)
+title(ylab = "TEMPO STIMATO (s)", line = 1)
+axis(1,at=stime$NODE,labels = stime$NODE, las=2,)
+
+axis(4,at=stime$TIME,labels = stime$TIME, las=2, cex.axis=0.65)
+
+
