@@ -256,6 +256,7 @@ il metodo controlla se l'oggetto rappresenta un sottoinsieme singleton contenent
 \end{flushleft}
 \subsubsection{Unordered Map}
 %TODO Inserire formula di ale
+%TODO ok se ho tempo la inserisco, altrimenti devi fare tu
 La \verb|std::unordered_map| è l'implementazione di una \textbf{Hash Map} in \textit{C++}. Questo contenitore è stato utilizzato nell'algoritmo di \textbf{Held e Karp} per l'implementazione di \verb|d[v,S]| e $\pi$\verb|[v,S]|, dato che la complessità media di lettura e scrittura è \textit{O(1)} nel nostro caso in cui supponiamo di non avere un limite di memoria.\\
 Dato che la funzione di \textbf{hashing} prende in input il nodo \verb|v| e il ciclo corrente \verb|S| rappresentato dal \verb|std::vector|$<$bool$>$ della classe \textbf{SubSet}, è risultato necessario rendere pubblico il corrispondente campo dati per ottimizzare i tempi di esecuzione.
 \subsection{Algoritmi}
@@ -523,11 +524,11 @@ Per paragonare gli algoritmi approssimati con l'algoritmo esatto di Held e Karp,
 \end{figure}
 Questa differenza diventa più chiara osservando l'errore relativo delle varie soluzioni rispetto alla soluzione ottima (fornita insieme al dataset). Dalla Figura \ref{conf_tot} si può notare che, per le istanze da 14 a 22 nodi, con Held e Karp con timeout si ottiene la soluzione approssimata migliore (con errore relativo $\leq 0.02$ e per \verb|burma14| e \verb|ulysses16| la soluzione ottima).\\
 Per quanto riguarda le istanze rimanenti, le soluzioni ricavate da Held e Karp superano ampiamente e quasi sempre il limite teorico di errore degli altri 2 algoritmi (essendo entrambi algoritmi di 2-approssimazione, il massimo errore relativo raggiungibile è 1).\\
-Unica eccezione a questo fatto sono i risultati ottenuti per \verb|gr202| e \verb|gr229| che sono molto vicini a quelli ottenuti dall'algoritmo di 2-approssimazione. Abbiamo attribuito tale evento ad una pura casualità.\\
-Essendo l'esecuzione di Held e Karp con un timeout troppo basso simile ad una visita in profondità dell'intero grafico, può accadere che tale cammino (chiuso a formare un ciclo unendo l'ultimo nodo aggiunto al nodo 0) rappresenti una soluzione approssimata abbastanza precisa.\\
+Unica eccezione a questo fatto sono i risultati ottenuti per \verb|gr202| e \verb|gr229| che sono molto vicini a quelli ottenuti dall'algoritmo di 2-approssimazione.\\
+Abbiamo attribuito tale evento ad una pura casualità. Essendo l'esecuzione di Held e Karp con un timeout troppo basso simile ad una visita in profondità dell'intero grafico, può accadere che tale cammino (chiuso a formare un ciclo unendo l'ultimo nodo aggiunto al nodo 1) rappresenti una soluzione approssimata abbastanza precisa.\\
 \medskip
-%TODO
-Confrontando invece gli algoritmi approssimati
+%TODO Enrico vuole completare questa parte
+Confrontando invece gli algoritmi approssimati possiamo osservare come Cheapest Insertion ottenga sempre un errore relativo minore di 2-Approssimazione.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{CONFRONTO_ERRORI_RELATIVI_20_MIN_NEW.png}
@@ -548,6 +549,8 @@ Le due varianti di Naive Kruskal differiscono unicamente nell'approccio alla \te
 \subsubsection{Confronto tra i TIMEOUT di Held-Karp}
 Come affermato in precedenza, Kruskal Union-Find è l'algoritmo più veloce su ogni singola istanza presente nel test-set.
 %TODO inserisci la tabella ale
+%TODO tabella inserita
+\input{errori_relativi_all_held_karp.tex}
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth, height=\textheight,keepaspectratio]{CONFRONTO_TIMEOUT_ERRORI.png}
@@ -558,6 +561,7 @@ Come affermato in precedenza, Kruskal Union-Find è l'algoritmo più veloce su o
 \newpage
 \subsubsection{Stima dei tempi di esecuzione di Held-Karp}
 %TODO trova il fattore dividendo per 2^n*n^2 e poi fai lo stesso grafico
+%TODO mi sono perso cosa sia questo fattore, se ho tempo mi riguardo i grafici, altrimenti suppongo che quello da dividere per 2^n*n^2 sia il tempo stimato dato che quello si trova sull asse Y
 La dimensione massima di \textit{d} e $\pi$ durante l'esecuzione dell'algoritmo di Held e Karp può essere espressa in funzione del numero di nodi $n$ del grafo:
 $$max\_dim = (\sum_{k=2}^{n-1}k\cdot\binom{n-1}{k}) + 1 = 2^{(n-2)} \cdot (n-1) - (n-1) +1 = (n-1)\cdot(2^{(n-2)}-1) +1$$
 Sapendo che avviene un inserimento in \textit{d} e $\pi$ ad ogni esecuzione del passo induttivo dell'algoritmo ...  supponendo di avere un computer capace di eseguire ogni chiamata ricorsiva in tempo medio $\sim 5.5*10^{-5}$ possiamo stimare il tempo di esecuzione dell'algoritmo per ogni istanza del dataset di grafi.

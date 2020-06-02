@@ -69,7 +69,7 @@ axis(1,at=relative$NODE,labels = relative$NODE, las=2)
 
 tempo <-data.frame(c(1200,300,180,60,30,0),c(mean(relative$HELD_20), mean(relative$HELD_5), mean(relative$HELD_3),mean(relative$HELD_1),mean(relative$HELD_30),mean(relative$HELD_0)))
 colnames(tempo) <- c("TIMEOUT", "MEDIA")
-plot(x= tempo$TIMEOUT, y= tempo$MEDIA,xaxt="n", type = "l",log= "y", col= "blue", ylab = "MEDIA % ERRORI RELATIVI", xlab = "TIMEOUT (S)", main = "CONFRONTO MEDIA ERRORI RELATIVI AL VARIARE DEL TIMEOUT", lty = 1, lwd = 2)
+plot(x= tempo$TIMEOUT, y= tempo$MEDIA,xaxt="n", type = "l",log= "y", col= "blue", ylab = "MEDIA ERRORI RELATIVI", xlab = "TIMEOUT (S)", main = "CONFRONTO MEDIA ERRORI RELATIVI AL VARIARE DEL TIMEOUT", lty = 1, lwd = 2)
 points(x = tempo$TIMEOUT, y = tempo$MEDIA, pch= 0, col="blue", cex=0.85)
 axis(1,at=tempo$TIMEOUT,labels = tempo$TIMEOUT, las=2)
 
