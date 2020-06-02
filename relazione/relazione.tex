@@ -253,13 +253,148 @@ function HK-VISIT(v,S)
 il metodo controlla se il contatore è uguale a 1 e se il nodo è presente nel ciclo.
 \end{flushleft}
 \subsubsection{Unordered Map}
-La \verb|std::unordered_map| è l'implementazione di una \textbf{Hash Map} in \textit{C++}. Questo contenitore è stato utilizzato nell'algoritmo di \textbf{Held e Karp} per l'implementazione di \verb|d[v,S]| e $\pi$\verb|[v,S]|.\\
-%TODO
+La \verb|std::unordered_map| è l'implementazione di una \textbf{Hash Map} in \textit{C++}. Questo contenitore è stato utilizzato nell'algoritmo di \textbf{Held e Karp} per l'implementazione di \verb|d[v,S]| e $\pi$\verb|[v,S]|, dato che la complessità media di lettura e scrittura è \textit{O(1)} nel nostro caso in cui supponiamo di non avere un limite di memoria.\\
 Dato che la funzione di \textbf{hashing} prende in input il nodo \verb|v| e il ciclo corrente \verb|S| rappresentato dal\verb|std::vector|$<$bool$>$ della classe \textbf{SubSet}, è risultato necessario rendere pubblico il corrispondente campo dati per ottimizzare i tempi di esecuzione.
 \subsection{Algoritmi}
 \subsubsection{Prim}
+\newpage
 \subsubsection{Held e Karp}
+\begin{flushleft}
+La nostra implementazione presente nel file \verb|algorithms\held_karp.h| è la seguente:
+\lstset{language=c++, style=mystyle}
+\lstinputlisting[language=c++]{held_karp.cpp}
+
+\textbf{Note implementative:}
+Come per l'algoritmo spiegato a lezione il l'implementazione si divide in due funzioni: \textbf{held$\_$karp}() che ritorna un \verb|std::vector<unsigned int>| rappresentante il circuito hamiltoniano trovato, e \textbf{held$\_$karp$\_$visit}() che calcola il circuito.\\
+Per migliorare la leggibilità abbiamo definito il tipo di \textit{d}, $\pi$ e della chiave hash per la poszione \verb|[v,S]| come :
+\lstset{language=c++, style=mystyle, firstnumber=1}
+\begin{lstlisting}
+typedef std::pair<unsigned int, std::vector<bool>> key_type;
+typedef std::unordered_map<key_type, T, std::function<size_t(key_type)>> D_Map
+typedef std::unordered_map<key_type, unsigned int, std::function<size_t(key_type)>> Pi_Map
+\end{lstlisting}
+Abbiamo anche definito il tipo del contatore per il \textbf{TIMEOUT} implementato dalla libreria \verb|std::chrono| :
+\lstset{language=c++, style=mystyle, firstnumber=4}
+\begin{lstlisting}
+typedef std::chrono::time_point<std::chrono::steady_clock> race_time;
+\end{lstlisting}
+\medskip
+Per l'inizializzazione di \textit{d} e $\pi$: 
+\lstset{language=c++, style=mystyle,backgroundcolor=\color{white}, firstnumber=3}  	 	
+\begin{lstlisting}[mathescape=true]
+d = $Ø$
+$\pi$ = $Ø$
+\end{lstlisting}
+Abbiamo ridefinito la funzione di Hashing come uno \verb|XOR| tra il vertice \verb|v| e l'hash della rappresentazione di \verb|S|
+\lstset{language=c++, style=mystyle, firstnumber=35}
+\begin{lstlisting}
+auto hash = [](key_type a){
+       return std::hash<unsigned int>()(a.first) ^ std::hash<std::vector<bool>>()(a.second);
+    };
+    std::unordered_map<key_type, T, std::function<size_t(key_type)>> D(1, hash);
+    std::unordered_map<key_type, unsigned int, std::function<size_t(key_type)>> Pi(1, hash);
+\end{lstlisting}
+\medskip
+Il controllo se la ricorsione ha raggiunto una foglia dell'albero o se il valore \verb|d[v,S]| è già stato calcolato :
+\lstset{language=c++, style=mystyle,backgroundcolor=\color{white}, firstnumber=2}  	 	
+\begin{lstlisting}[mathescape=true]
+if S = {v} then
+	return w[v,0]
+else if d[v,S] $\neq$ NULL then
+	return d[v,S]
+else
+\end{lstlisting}
+è stato implementato in modo simile all'algoritmo spiegato a lezione utilizzando la classe \textbf{SubSet} :
+\lstset{language=c++, style=mystyle, firstnumber=6}
+\begin{lstlisting}
+	if (S.only_vertex(v)){
+        return w.at(v,0);
+    }else if(D.contains(std::make_pair(v, S.collection))){
+        return D.at(std::make_pair(v, S.collection));
+    }else {
+\end{lstlisting}
+\medskip
+Nella parte successiva di esplorazione dell'albero abbiamo ancora una volta cercato di avere un implementazione il più simile possibile all'algoritmo spiegato :
+\lstset{language=c++, style=mystyle,backgroundcolor=\color{white}, firstnumber=6}  	 	
+\begin{lstlisting}[mathescape=true]
+else
+	mindist = +$\infty$
+	minprec = NULL
+	for each u $\in$ S\{v}
+		dist = HK-VISIT(u, S\{v})
+		if dist + w[u,v] $<$ mindist
+			mindist = dist + w[u,v]
+			minprec = u
+		end
+	end
+	d[v,S] = mindist
+	$\pi$[v,S] = minprec
+	return mindist
+end
+\end{lstlisting}
+Le uniche differenze sono l'aggiunta e la rimozione di \verb|v| da \verb|S| che avvengono prima e dopo del ciclo \verb|for| :
+\lstset{language=c++, style=mystyle, firstnumber=26}
+\begin{lstlisting}
+        S.remove(v);
+        for (int u = 1; expired && ( u < w.sizeY() ); ++u) {
+        	if(S.at(u)){
+            	...
+            }
+        }
+        S.add(v);
+        D.insert_or_assign(std::make_pair(v, S.collection), mindist);
+        Pi.insert_or_assign(std::make_pair(v, S.collection), minprec);
+\end{lstlisting}
+Mentre nell'algoritmo questo avviene all'interno della guardia del \verb|for| e nella chiamata ricorsiva :
+\lstset{language=c++, style=mystyle,backgroundcolor=\color{white}, firstnumber=9}  	 	
+\begin{lstlisting}[mathescape=true]
+	for each u $\in$ S\{v}
+		dist = HK-VISIT(u, S\{v})
+\end{lstlisting}
+Infine da $\pi$ si ricostruisce il ciclo per uniformare il tipo di ritorno tra gli algoritmi :
+\lstset{language=c++, style=mystyle, firstnumber=43}
+\begin{lstlisting}
+    std::vector<unsigned int> C(1,0);
+    SubSet Y(w.sizeY(), true);
+    for(int i = 0; Pi.contains(std::make_pair(C[i], Y.collection)); ++i){
+        C.push_back(Pi.at(std::make_pair(C[i], Y.collection)));
+        Y.remove(C[i]);
+    }
+    C.push_back(0);
+    return C;
+\end{lstlisting}
+
+
+
+\bigskip
+\textbf{Implementazione del TIMEOUT:}
+Ogni chiamata alla funzione \textbf{held$\_$karp$\_$visit}() passa con riferimento un contatore temporale \verb|starting_time| e una variabile booleana \verb|expired|.
+La variabile inizialmente vale \verb|true| mentre il contatore è inizializzato alla prima chiamata della funzione all'interno di \textbf{held$\_$karp}() :
+\lstset{language=c++, style=mystyle, firstnumber=40}
+\begin{lstlisting}
+	race_time starting_time = std::chrono::steady_clock::now();
+	T value = held_karp_visit(0, S, w, D, Pi, starting_time, true);
+\end{lstlisting}
+\smallskip
+All'interno di \textbf{held$\_$karp$\_$visit}() dopo ogni chiamata ricorsiva viene calcolato se il \textbf{TIMEOUT} (definito con \verb|#define TIMEOUT 1200.00|) è scaduto:
+\lstset{language=c++, style=mystyle, firstnumber=21}
+\begin{lstlisting}
+	std::chrono::duration<double> now = std::chrono::steady_clock::now()-starting_time;
+	if(now.count() >= TIMEOUT)
+    	expired = false;
+\end{lstlisting}
+In caso positivo \verb|expired| viene settata a \verb|false| uscendo così dal ciclo \verb|for|.
+\lstset{language=c++, style=mystyle, firstnumber=14}
+\begin{lstlisting}
+	for (int u = 1; expired && ( u < w.sizeY() ); ++u)
+\end{lstlisting}
+\medskip
+Il controllo del tempo dopo la chiamata ricorsiva garantisce che anche con un \textbf{TIMEOUT} uguale a 0, almeno una foglia dell'albero sia stata raggiunta e sia stato esplorato almeno un ciclo (in questo caso dato che partiamo dal nodo 1 il ciclo è \{1, 2, ... n, 1\}).
+\end{flushleft}
+
+\newpage
 \subsubsection{2-approssimazione}
+
 \newpage
 \subsubsection{Euristica cheapest-insertion}
 \begin{flushleft}
