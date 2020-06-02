@@ -9,14 +9,14 @@ std::vector<unsigned int> cheapest_insertion(Matrix<T> w){
         }
     }
     C.insert(C.begin() + 1, find_node);
-    bool L[w.sizeY()] = {0};
-    L[0], L[find_node] = true, true;
+    SubSet L(w.sizeY());
+    L.add(0); L.add(find_node);
     while(C.size() <= w.sizeY()){
         find_min = (T)INT_MAX;
         find_node = -1;
         unsigned int temp_pos = INT_MAX;
         for(int k = 1; k<w.sizeY(); ++k){
-            if(!L[k]){
+            if(!L.at(k)){
                 for(unsigned int i = 0; i<C.size()-1; ++i) {
                     if((w.at(C[i],k) + w.at(C[i+1],k) - w.at(C[i],C[i+1])) < find_min){
                         find_min = w.at(C[i],k) + w.at(C[i+1],k) - w.at(C[i],C[i+1]);
@@ -27,7 +27,7 @@ std::vector<unsigned int> cheapest_insertion(Matrix<T> w){
             }
         }
         C.insert(C.begin() + temp_pos, find_node);
-        L[find_node] = true;
+        L.add(find_node);
     }
     return C;
 }

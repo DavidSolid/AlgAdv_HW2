@@ -24,8 +24,8 @@ std::vector<unsigned int> cheapest_insertion(Matrix<T> w){
     }
     //add j to C -> C(0,j,0)
     C.insert(C.begin() + 1, find_node);
-    bool L[w.sizeY()] = {0};
-    L[0], L[find_node] = true, true;
+    SubSet L(w.sizeY());
+    L.add(0); L.add(find_node);
 
     //select k
     while(C.size() <= w.sizeY()){
@@ -35,7 +35,7 @@ std::vector<unsigned int> cheapest_insertion(Matrix<T> w){
         //we always know that 0 is already inside C
         for(int k = 1; k<w.sizeY(); ++k){
             //check if j is already inside C
-            if(!L[k]){
+            if(!L.at(k)){
                 //C.size()-1 because C is a circuit so C[0] == C[end]
                 for(unsigned int i = 0; i<C.size()-1; ++i) {
                     if((w.at(C[i],k) + w.at(C[i+1],k) - w.at(C[i],C[i+1])) < find_min){
@@ -47,7 +47,7 @@ std::vector<unsigned int> cheapest_insertion(Matrix<T> w){
             }
         }
         C.insert(C.begin() + temp_pos, find_node);
-        L[find_node] = true;
+        L.add(find_node);
     }
     return C;
 }
