@@ -1,11 +1,13 @@
 \documentclass[]{article}
-\usepackage[a4paper, total={6.5in, 10.5in}]{geometry}%6
+\usepackage[a4paper, total={7.0in, 10.5in}]{geometry}%6
 \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{longtable}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
 \usepackage{float}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -234,30 +236,31 @@ $$q2 = cos((rad)i.x - (rad)j.x)$$
 $$q3 = cos((rad)i.x + (rad)j.x)$$
 \subsubsection{SubSet}
 \begin{flushleft}
-Per tenere traccia della presenza o meno di un nodo del grafo all'interno del ciclo corrente nell'istanza dell'algoritmo \textbf{Held e Karp}, durante la ricorsione, abbiamo implementato la classe \textit{SubSet}.\\
+Per tenere traccia della presenza o meno di un nodo del grafo all'interno del sottoinsieme S corrente nell'istanza dell'algoritmo \textbf{Held e Karp}, durante la ricorsione, abbiamo implementato la classe \textit{SubSet}.\\
 Gli oggetti di questo tipo contengono due campi dati:
 \begin{itemize}
-	\item Un \verb|std::vector|$<$bool$>$ nella quale gli indici con valore \verb|TRUE| rappresentano nodi presenti nel ciclo
-	\item Un contatore che traccia il numero di nodi presenti nel ciclo
+	\item Un \verb|std::vector|$<$bool$>$ nella quale gli indici con valore \verb|TRUE| rappresentano i nodi presenti nel sottoinsieme
+	\item Un contatore che traccia il numero di nodi presenti nel sottoinsieme
 \end{itemize}
 
 La classe espone i metodi \verb|at| e \verb|add| che rispettivamente permettono il controllo di presenza di un nodo nel ciclo e l'aggiunta di un nuovo nodo al ciclo.\\
-Il metodo \verb|remove| è utilizzato per implementare l'operazione \verb|S\{v}| rimuovendo un nodo dal ciclo e aggiornando il contatore.\\
+Il metodo \verb|remove| è utilizzato per implementare l'operazione \verb|S\{v}| rimuovendo un nodo dal sottoinsieme e aggiornando il contatore.\\
 Infine il metodo \verb|only_vertex| è utilizzato nella guardia del primo \verb|IF| dell'algoritmo di \textbf{Held e Karp}:
 	\lstset{language=c++, style=mystyle,backgroundcolor=\color{white}, firstnumber=1}  	 	
 \begin{lstlisting}[mathescape=true]
 function HK-VISIT(v,S)
-	if S = v} then
+	if S = {v} then
 		return w[v,0]
 \end{lstlisting}
-il metodo controlla se il contatore è uguale a 1 e se il nodo è presente nel ciclo.
+il metodo controlla se l'oggetto rappresenta un sottoinsieme singleton contenente il nodo \textit{v}.
 \end{flushleft}
 \subsubsection{Unordered Map}
+%TODO Inserire formula di ale
 La \verb|std::unordered_map| è l'implementazione di una \textbf{Hash Map} in \textit{C++}. Questo contenitore è stato utilizzato nell'algoritmo di \textbf{Held e Karp} per l'implementazione di \verb|d[v,S]| e $\pi$\verb|[v,S]|, dato che la complessità media di lettura e scrittura è \textit{O(1)} nel nostro caso in cui supponiamo di non avere un limite di memoria.\\
-Dato che la funzione di \textbf{hashing} prende in input il nodo \verb|v| e il ciclo corrente \verb|S| rappresentato dal\verb|std::vector|$<$bool$>$ della classe \textbf{SubSet}, è risultato necessario rendere pubblico il corrispondente campo dati per ottimizzare i tempi di esecuzione.
+Dato che la funzione di \textbf{hashing} prende in input il nodo \verb|v| e il ciclo corrente \verb|S| rappresentato dal \verb|std::vector|$<$bool$>$ della classe \textbf{SubSet}, è risultato necessario rendere pubblico il corrispondente campo dati per ottimizzare i tempi di esecuzione.
 \subsection{Algoritmi}
 \subsubsection{Prim}
-\newpage
+L'implementazione dell'algoritmo di Prim è stata realizzata nel corso dell'homework precedente. Tale algoritmo è utilizzato all'interno dell'algoritmo di 2-approssimazione ed è stato adeguatamente modificato per poter essere utilizzato con la matrice di adiacenza estratta da un oggetto \textit{Graph\_Data}.
 \subsubsection{Held e Karp}
 \begin{flushleft}
 La nostra implementazione presente nel file \verb|algorithms\held_karp.h| è la seguente:
@@ -394,15 +397,48 @@ Il controllo del tempo dopo la chiamata ricorsiva garantisce che anche con un \t
 
 \newpage
 \subsubsection{2-approssimazione}
+\begin{flushleft}
+L'algoritmo di 2-approssimazione è stato implementato nel file \verb|algorithms\preorder_2approx.h|:
+\lstset{language=c++, style=mystyle}
+\lstinputlisting[language=c++]{2approx.cpp}
 
+\textbf{Note implementative:}\\
+Il ciclo hamiltoniano calcolato è rappresentato come un \verb|std::vector<unsigned int>| dei vertici contenuti nel ciclo stesso.\\
+L'algoritmo utilizza una funzione di supporto \verb|preorder| che, dato un MST (o in generale un albero rappresentato da una lista di adiacenza), restituisce la lista di nodi dell'albero in \textit{traversal pre-order}.
+Dato un nodo di partenza \verb|f_elem|, la funzione restituisce la seguente lista definita ricorsivamente:
+$$preorder(f\_elem) \triangleq [f\_elem] \dblcolon preorder(f\_elem.parent(1)) \dblcolon ... \dblcolon preorder(f\_elem.parent(n))$$
+Tale definizione induttiva è implementata dal seguente frammento di codice:
+\lstset{language=c++, style=mystyle, firstnumber=4}
+\begin{lstlisting}
+	out.emplace_back(f_elem);
+	for(unsigned int i: tree[f_elem]){
+		auto part = preorder(i, tree);
+		out.insert(out.end(), part.begin(), part.end());
+	}
+\end{lstlisting}
+La funzione \verb|preorder_2approx| utilizza \verb|preorder| ed implementa l'algoritmo vero e proprio.
+L'algoritmo esegue questi semplici passi:
+\begin{itemize}
+	\item Esecuzione dell'algoritmo di Prim per ricavare il MST
+	\item Esecuzione di \verb|preorder| per ricavare la lista di nodi
+	\item Aggiunta del nodo 0 per chiudere il ciclo
+\end{itemize}
+Tali passi sono implementati nel seguente frammento di codice:
+\lstset{language=c++, style=mystyle, firstnumber=13}
+\begin{lstlisting}
+	Tree_t mst = Prim(w);
+	std::vector<unsigned int> chain = preorder(0, mst);
+	chain.emplace_back(0);
+\end{lstlisting}
+\end{flushleft}
 \newpage
 \subsubsection{Euristica cheapest-insertion}
 \begin{flushleft}
-Come euristica abbiamo scelto \textbf{Cheapest-Insertion}, e l'implemnetazione presente nel file \verb|algorithms\cheapest_insertion.h| è la seguente:
+Come euristica abbiamo scelto \textbf{Cheapest-Insertion}, e l'implementazione presente nel file \verb|algorithms\cheapest_insertion.h| è la seguente:
 \lstset{language=c++, style=mystyle}
 \lstinputlisting[language=c++]{cheap_insert.cpp}
 
-\textbf{Note implementative:}
+\textbf{Note implementative:}\\
 La funzione come le altre ritorna un \verb|std::vector<unsigned int>| che rappresenta il circuito hamiltoniano trovato.\\
 La procedura descritta a lezione è composta da 4 passi:
 \begin{enumerate}
@@ -458,7 +494,8 @@ All'interno del ciclo while è implementato il passo \textbf{2}:
             }
         }
 \end{lstlisting}
-Cicliamo tutti i nodi del grafo che non fanno parte del circuito (saltando lo 0 dato che sappiamo faccia parte del circuito di partenza), e per ogni nodo cerchiamo quello che minimizza la formula \verb|w(i,k)+w(k,j)-w(i,j)|.\\
+Cicliamo tutti i nodi del grafo che non fanno parte del circuito (saltando lo 0 dato che sappiamo faccia parte del circuito di partenza), e per ogni nodo cerchiamo quello che minimizza la formula: 
+$$w(i,k)+w(k,j)-w(i,j)$$
 Nel passo \textbf{3} inseriamo il nodo trovato e aggiorniamo il vettore tenente traccia dei nodi presenti nel ciclo parziale:
 \lstset{language=c++, style=mystyle, firstnumber=29}
 \begin{lstlisting}
@@ -471,36 +508,34 @@ Nel passo \textbf{3} inseriamo il nodo trovato e aggiorniamo il vettore tenente 
 \section{Analisi}
 \subsection{Risultati prodotti}
 \begin{flushleft}
-Di seguito è mostrata la tabella completa dei tempi di esecuzione (ignorando il tempo utilizzato per il parsing) e degli errori relativi degli algoritmi per ogni grafo e relativo peso del ciclo della soluzione trovata: 
+Di seguito è mostrata la tabella completa dei tempi di esecuzione (ignorando il tempo utilizzato per il parsing) e degli errori relativi degli algoritmi per ogni grafo e relativo peso del ciclo hamiltoniano trovato: 
 
 \input{tabella_richiesta.tex}
-%TODO la tabella esce dai margini
 
 \subsection{Analisi e conclusioni}
-Dall'analisi dei tempi d'esecuzione possiamo notare che generalmente gli algoritmi considerati più efficienti (quelli con complessità asintotica $O(m\cdot\log n)$) risultano essere effettivamente i più veloci.\\
-Si può infatti notare dalla Figura \ref{total} come il tempo totale di esecuzione dell'algoritmo di Prim e Kruskal Union-Find sull'intero test-set ammonti a pochi secondi ($\leq 5 s$) mentre le varie istanze di Naive Kruskal impieghino dai 20 ai 30 minuti.
+\subsubsection{Confronto generale su pesi dei cicli ed errori relativi}
+Per paragonare gli algoritmi approssimati con l'algoritmo esatto di Held e Karp, abbiamo effettuato test imponendo un timeout di 20 minuti, in modo da rendere più preciso possibile il ciclo ricavato da quest'ultimo. Tuttavia, come si può notare dalla Figura \ref{total}, ad eccezione di qualche istanza, l'algoritmo di Held e Karp con timeout restitutisce quasi sempre l'approssimazione pessima (in certi casi con valori superiori di un ordine di grandezza rispetto a quelli restituiti dagli altri algoritmi).
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{CONFRONTO_ERRORI_RELATIVI_20_MIN_NEW.png}
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{CONFRONTO_RISULTATI.png}
 	\caption{\textbf{Confronto degli errori relativi tra gli algoritmi}}
 	\label{total}
 \end{figure}
-
-\newpage
-\subsubsection{Confronto tra tutti gli algoritmi}
-Considerando invece i tempi di esecuzione medi in relazione al numero di nodi di un grafo, ci accorgiamo che, per grafi di piccola taglia, le varianti DFS e BFS di Naive Kruskal risultano essere più efficienti di Prim.\\
-Come si può notare dalla Figura \ref{conf_tot}, Kruskal DFS e Kruskal BFS hanno tempi medi d'esecuzione più bassi rispetto all'algoritmo di Prim per grafi con numero di nodi, rispettivamente, minori di 100 e 40.
-Questo fenomeno è probabilmente dovuto all'overhead causato dall'utilizzo di strutture dati come MinHeap e dalla costruzione della AdjacencyList finale che diventa tuttavia trascurabile per grafi di taglia sufficientemente alta ed è compensato dai benefici che esse forniscono in termini di efficienza.\\
-Notiamo inoltre che Kruskal con Union-Find è l'algoritmo più efficiente e riesce ad ottenere prestazioni migliori rispetto agli altri algoritmi su grafi di qualsiasi taglia.\\
+Questa differenza diventa più chiara osservando l'errore relativo delle varie soluzioni rispetto alla soluzione ottima (fornita insieme al dataset). Dalla Figura \ref{conf_tot} si può notare che, per le istanze da 14 a 22 nodi, con Held e Karp con timeout si ottiene la soluzione approssimata migliore (con errore relativo $\leq 0.02$ e per \verb|burma14| e \verb|ulysses16| la soluzione ottima).\\
+Per quanto riguarda le istanze rimanenti, le soluzioni ricavate da Held e Karp superano ampiamente e quasi sempre il limite teorico di errore degli altri 2 algoritmi (essendo entrambi algoritmi di 2-approssimazione, il massimo errore relativo raggiungibile è 1).\\
+Unica eccezione a questo fatto sono i risultati ottenuti per \verb|gr202| e \verb|gr229| che sono molto vicini a quelli ottenuti dall'algoritmo di 2-approssimazione. Abbiamo attribuito tale evento ad una pura casualità.\\
+Essendo l'esecuzione di Held e Karp con un timeout troppo basso simile ad una visita in profondità dell'intero grafico, può accadere che tale cammino (chiuso a formare un ciclo unendo l'ultimo nodo aggiunto al nodo 0) rappresenti una soluzione approssimata abbastanza precisa.\\
+\medskip
+%TODO
+Confrontando invece gli algoritmi approssimati
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{CONFRONTO_ERRORI_RELATIVI_20_MIN_NEW.png}
 	\caption{\textbf{Confronto degli errori relativi tra gli algoritmi}}
 	\label{conf_tot}
 \end{figure}
-Notiamo infine un caso particolare per i grafi di taglia 100 nella quale tutti gli algoritmi sembrano avere un tempo di esecuzione simile, osservando i singoli grafi possiamo notare come il grafo 20 risulti l'unico in cui \textbf{KRUSKAL UNION-FIND} abbia un tempo di esecuzione peggiore di tutte le altre implementazioni.
 \newpage
-\subsubsection{Confronto tra le euristiche costruttive}
+\subsubsection{Confronto tra algoritmi di approssimazione su tempo di esecuzione}
 Le due varianti di Naive Kruskal differiscono unicamente nell'approccio alla \textit{cycle detection} in fase di costruzione del MST.\\
 \begin{figure}[h]
 	\centering
@@ -512,6 +547,7 @@ Le due varianti di Naive Kruskal differiscono unicamente nell'approccio alla \te
 \newpage
 \subsubsection{Confronto tra i TIMEOUT di Held-Karp}
 Come affermato in precedenza, Kruskal Union-Find è l'algoritmo più veloce su ogni singola istanza presente nel test-set.
+%TODO inserisci la tabella ale
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth, height=\textheight,keepaspectratio]{CONFRONTO_TIMEOUT_ERRORI.png}
@@ -521,9 +557,10 @@ Come affermato in precedenza, Kruskal Union-Find è l'algoritmo più veloce su o
 
 \newpage
 \subsubsection{Stima dei tempi di esecuzione di Held-Karp}
-Studiando la dimensione di \textit{d} e $\pi$ possiamo osservare come questa vari rispetto al numero di nodi seguendo la seguente formula: $dim = (2^{(n-2)} - 1) * (n-1) + 1$.
-%TODO scrivo ciclo/ funzione / ricorsione???????
-Supponendo di avere un computer capace di eseguire ogni chiamata ricorsiva in tempo medio $\sim 5.5*10^{-5}$ possiamo stimare il tempo di esecuzione dell'algoritmo per ogni istanza del dataset di grafi.
+%TODO trova il fattore dividendo per 2^n*n^2 e poi fai lo stesso grafico
+La dimensione massima di \textit{d} e $\pi$ durante l'esecuzione dell'algoritmo di Held e Karp può essere espressa in funzione del numero di nodi $n$ del grafo:
+$$max\_dim = (\sum_{k=2}^{n-1}k\cdot\binom{n-1}{k}) + 1 = 2^{(n-2)} \cdot (n-1) - (n-1) +1 = (n-1)\cdot(2^{(n-2)}-1) +1$$
+Sapendo che avviene un inserimento in \textit{d} e $\pi$ ad ogni esecuzione del passo induttivo dell'algoritmo ...  supponendo di avere un computer capace di eseguire ogni chiamata ricorsiva in tempo medio $\sim 5.5*10^{-5}$ possiamo stimare il tempo di esecuzione dell'algoritmo per ogni istanza del dataset di grafi.
 \input{stima_dim.tex}
 I primi 3 tempi non sono stime ma sono stati ottenuti tramite l'esecuzione dell'algoritmo, possiamo osservare come già con 22 nodi il tempo di esecuzione si aggira intorno ai 40 minuti, ma il salto a 51 nodi porta il tempo stimato a circa 49090 anni
 %TODO una conclusione??? dimostrando così l'impraticabilità dell'algoritmo per grafi di dimensioni XXX?
