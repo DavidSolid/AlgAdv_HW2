@@ -88,8 +88,9 @@ options(digits=2)
 #sono pigro
 stime <-data.frame(held_20$GRAPH, held_20$NODE)
 colnames(stime) = c("GRAPH", "NODE")
-stime$DIM = (2^(stime$NODE - 2) -1 ) * (stime$NODE - 1) + 1
-stime$TIME = stime$DIM * ((5.5)*(10^(-5)))
+stime$DIM = (2^(stime$NODE)) * ((stime$NODE)^2)
+stime$K = held_20$TIME/stime$DIM
+stime$TIME = stime$DIM * (7.6e-07)
 write.csv(stime, "stime.csv", row.names = TRUE, quote = FALSE)
 
 par(mar=c(4.1, 2.1, 2.1, 10.1))
@@ -98,7 +99,5 @@ plot(x= stime$NODE, y= stime$TIME,xaxt="n",log= "xy",yaxt="n",type = "l", col= "
 points(x= stime$NODE, y= stime$TIME, pch= 0, col="blue", cex=0.85)
 title(ylab = "TEMPO STIMATO (s)", line = 1)
 axis(1,at=stime$NODE,labels = stime$NODE, las=2,)
-
-axis(4,at=stime$TIME,labels = stime$TIME, las=2, cex.axis=0.65)
 
 
