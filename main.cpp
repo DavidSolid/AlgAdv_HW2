@@ -47,7 +47,7 @@ int main() {
     std::cout << "cheapest  : " << res_cheapest << std::endl << std::endl;
     */
 
-    //IF YOU WANT TO CHECK ALL THE DATASET YOU CAN USE THIS SCRIPT
+    //IF YOU WANT TO CHECK ALL THE GRAPH IN THE DATASET YOU CAN USE THIS SCRIPT
     std::string path = "..\\dataset";
     Parser myParser = Parser();
     for (const auto &entry : std::filesystem::directory_iterator(path)) {

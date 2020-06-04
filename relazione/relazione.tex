@@ -209,6 +209,8 @@ La struttura dei file è espressa dalla seguente formula BNF:
 \end{verbatim}
 La classe \textit{Parser} si occupa della decodifica di questi file e organizza le informazioni rilevanti quali tipologia delle coordinate, dimensione e coordinate dei nodi creando un oggetto di classe \textit{Graph\_data}.
 \subsection{Strutture dati generiche}
+Per evitare spreco di memoria nelle rappresentazioni e negli algoritmi, si suppone nella relazione e nell'effettiva implementazione in \textit{C++} che tutti i grafi abbiamo nodi che numericamente partono da 0.\\
+Il \textbf{Parser} decodificherà tutti i grafici che partono da 1 muovendo il valore di una posizione.
 \subsubsection{Matrix}
 La classe \textit{Matrix$<$T$>$} rappresenta una generica matrice rettangolare di oggetti di tipo T.\\
 Essa è utilizzata per la memorizzazione della matrice di adiacenza associata a un grafo.

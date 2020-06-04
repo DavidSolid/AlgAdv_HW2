@@ -34,7 +34,7 @@ std::vector<unsigned int> cheapest_insertion(Matrix<T> w){
         unsigned int temp_pos = INT_MAX;
         //we always know that 0 is already inside C
         for(int k = 1; k<w.sizeY(); ++k){
-            //check if j is already inside C
+            //check if k is already inside C
             if(!L.at(k)){
                 //C.size()-1 because C is a circuit so C[0] == C[end]
                 for(unsigned int i = 0; i<C.size()-1; ++i) {
