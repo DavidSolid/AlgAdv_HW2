@@ -18,7 +18,7 @@ public:
     Matrix(Matrix&&) noexcept;
     ~Matrix();
 
-    T*& mat();//TODO: modify and add friend declaration
+    T*& mat();
     [[nodiscard]] unsigned int sizeX() const;
     [[nodiscard]] unsigned int sizeY() const;
     void update(unsigned int, unsigned int, const T&);

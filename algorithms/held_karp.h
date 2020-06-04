@@ -14,10 +14,10 @@
 #include <chrono>
 
 //#define TIMEOUT 2700.00
-#define TIMEOUT 1200.00
+//define TIMEOUT 1200.00
 //#define TIMEOUT 300.00
 //#define TIMEOUT 180.00
-//#define TIMEOUT 60.00
+#define TIMEOUT 60.00
 //#define TIMEOUT 30.00
 //#define TIMEOUT 0.00
 
@@ -59,7 +59,7 @@ template <typename T>
 std::vector<unsigned int> held_karp(Matrix<T> w) {
     SubSet S(w.sizeX(), true);
 
-    auto hash = [](key_type a){
+    auto hash = [](const key_type& a){
         return std::hash<unsigned int>()(a.first) ^ std::hash<std::vector<bool>>()(a.second);
     };
 
@@ -71,6 +71,7 @@ std::vector<unsigned int> held_karp(Matrix<T> w) {
 
     T value = held_karp_visit(0, S, w, D, Pi, starting_time, true);
 
+    //To maintain a standard output with the other algorithms we create and populate the cycle
     std::vector<unsigned int> C(1,0);
 
     SubSet Y(w.sizeY(), true);

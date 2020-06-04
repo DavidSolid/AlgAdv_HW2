@@ -55,7 +55,6 @@ Matrix<T> Graph_Data<T>::get_weights() const {
             double q2 = cos(p.first - q.first);
             double q3 = cos(p.first + q.first);
             return trunc(RADIUS * acos(0.5*((1.0+q1)*q2-(1.0-q1)*q3))+1.0);
-            //return trunc(RADIUS * acos(sin(p.first) * sin(q.first) + cos(p.first) * cos(q.first) * cos(p.second-q.second)));
         };
     }
 
