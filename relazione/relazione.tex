@@ -36,7 +36,7 @@
 }
 
 % Title Page
-\title{Homework2, Algoritmi su Grafi}
+\title{Homework2, Algoritmi per il problema del Traveling Salesman}
 \author{Enrico Cancelli, \textit{matr.} 1237293\\
 	Alessandro Pegoraro, \textit{matr.} 1240466}
 
@@ -178,6 +178,9 @@ Come riferimento per l'implementazione di questi algoritmi è stato utilizzato i
 \section{Implementazione}
 In questa sezione verranno esposte e adeguatamente motivate le scelte implementative adottate durante lo sviluppo. L'intero progetto è stato realizzato facendo il più possibile uso di codice generico (template di classe per le strutture dati di supporto e template di funzione per gli algoritmi).\\
 Infine verrà data una spiegazione dettagliata sulla struttura del codice realizzato ed eventuali note per la compilazione.
+\subsection{Struttura del progetto}
+Abbiamo deciso di implementare il progetto utilizzando il linguaggio \textit{C++} 20 per motivi di efficienza e per poter, allo stesso tempo, utilizzare astrazioni tipiche dei linguaggi ad oggetti rendendo il codice prodotto più modulare tramite l'utilizzo di classi templetizzate.\\
+Inoltre \textit{C++} 20 implementa nuove funzionalità per \verb|std::unordered_map| mancanti in \textit{C++} 17
 \subsection{Parser}
 Il dataset fornito è costituito, come per il progetto precedente, da un file per ogni grafo.\\
 La struttura dei file è espressa dalla seguente formula BNF:
@@ -524,7 +527,8 @@ Nel passo \textbf{3} inseriamo il nodo trovato e aggiorniamo il vettore tenente 
         C.insert(C.begin() + temp_pos, find_node);
         L.add(find_node);
 \end{lstlisting}
-
+\subsection{Note sulla compilazione}
+Per il progetto è stato utilizzato il build-system CMake. Per generare il \verb|makefile| è necessario disporre di una versione di tale software $\geq 3.14$ e per la compilazione è necessario un compilatore che supporti lo standard 2020 del linguaggio \textit{C++}.
 \end{flushleft}
 \newpage
 \section{Analisi}

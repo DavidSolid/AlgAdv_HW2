@@ -14,10 +14,10 @@
 #include <chrono>
 
 //#define TIMEOUT 2700.00
-//define TIMEOUT 1200.00
+#define TIMEOUT 1200.00
 //#define TIMEOUT 300.00
 //#define TIMEOUT 180.00
-#define TIMEOUT 60.00
+//define TIMEOUT 60.00
 //#define TIMEOUT 30.00
 //#define TIMEOUT 0.00
 

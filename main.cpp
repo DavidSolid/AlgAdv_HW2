@@ -7,9 +7,6 @@
 #include <filesystem>
 #include <chrono>
 #include <algorithm>
-#define SIZEX 10
-#define SIZEY 200
-
 
 int main() {
     //IF YOU WANT TO CHECK ONLY ONE GRAPH YOU CAN USE THIS COMMENTED SCRIPT
@@ -27,11 +24,20 @@ int main() {
 
     Matrix mat(data.get_weights());
 
+    auto start = std::chrono::steady_clock::now();
+
     auto cycle_2approx = preorder_2approx(mat);
+    auto end_2approx = std::chrono::steady_clock::now();
 
     auto cycle_cheapest = cheapest_insertion(mat);
+    auto end_cheapest = std::chrono::steady_clock::now();
 
     auto cycle_held_karp = held_karp(mat);
+    auto end_held_karp = std::chrono::steady_clock::now();
+
+    std::chrono::duration<double> elapsed_2approx = end_2approx - start;
+    std::chrono::duration<double> elapsed_cheapest = end_cheapest - end_2approx;
+    std::chrono::duration<double> elapsed_held_karp = end_held_karp - end_cheapest;
 
     double res_held_karp = 0;
     double res_2approx = 0;
@@ -42,9 +48,9 @@ int main() {
         res_cheapest += mat.at(cycle_cheapest[i], cycle_cheapest[i+1]);
     }
 
-    std::cout << "held_karp : " << res_held_karp << std::endl;
-    std::cout << "2approx   : " << res_2approx << std::endl;
-    std::cout << "cheapest  : " << res_cheapest << std::endl << std::endl;
+    std::cout << "held_karp : " << res_held_karp << "  time : " << elapsed_2approx.count() << std::endl;
+    std::cout << "2approx   : " << res_2approx << "  time : " << elapsed_cheapest.count() << std::endl;
+    std::cout << "cheapest  : " << res_cheapest << "  time : " << elapsed_held_karp.count() << std::endl << std::endl;
     */
 
     //IF YOU WANT TO CHECK ALL THE GRAPH IN THE DATASET YOU CAN USE THIS SCRIPT
@@ -62,11 +68,20 @@ int main() {
 
         Matrix mat(data.get_weights());
 
+        auto start = std::chrono::steady_clock::now();
+
         auto cycle_2approx = preorder_2approx(mat);
+        auto end_2approx = std::chrono::steady_clock::now();
 
         auto cycle_cheapest = cheapest_insertion(mat);
+        auto end_cheapest = std::chrono::steady_clock::now();
 
         auto cycle_held_karp = held_karp(mat);
+        auto end_held_karp = std::chrono::steady_clock::now();
+
+        std::chrono::duration<double> elapsed_2approx = end_2approx - start;
+        std::chrono::duration<double> elapsed_cheapest = end_cheapest - end_2approx;
+        std::chrono::duration<double> elapsed_held_karp = end_held_karp - end_cheapest;
 
         double res_held_karp = 0;
         double res_2approx = 0;
@@ -77,9 +92,9 @@ int main() {
             res_cheapest += mat.at(cycle_cheapest[i], cycle_cheapest[i+1]);
         }
 
-        std::cout << "held_karp : " << res_held_karp << std::endl;
-        std::cout << "2approx   : " << res_2approx << std::endl;
-        std::cout << "cheapest  : " << res_cheapest << std::endl << std::endl;
+        std::cout << "held_karp : " << res_held_karp << "  time : " << elapsed_2approx.count() << std::endl;
+        std::cout << "2approx   : " << res_2approx << "  time : " << elapsed_cheapest.count() << std::endl;
+        std::cout << "cheapest  : " << res_cheapest << "  time : " << elapsed_held_karp.count() << std::endl << std::endl;
     }
 
     return 0;
